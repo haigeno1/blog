@@ -1,4 +1,6 @@
 // 代码来源于https://github.com/xieranmaya/Promise3
+// 测试 npm install -g promises-aplus-tests 
+// promises-aplus-tests ./Promise3.js
 
 var Promise = (function() {
     function Promise(resolver) {
