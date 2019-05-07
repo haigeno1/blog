@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+  function get(value) {
+    console.log('开始请求',value)
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log(value,'请求结束')
+        resolve(value)
+      }, 2000 + Math.random() * 1000)
+    })
+  }
+
+  function *g(){
+    console.log("beginning")
+    var a3 = yield get(3)
+    var a4 = yield get(4)
+    try{
+      var a5 = yield get(5)
+      console.log(5)
+    }catch(e){
+      var a5 = e
+      console.log("catched e")
+    }
+    var a7 = yield get(7)
+    //throw 123
+    var a9 = yield get(9)
+    console.log(a3,a5,a7,a9)
+    console.log(357)
+  }
+  var iter = g()
+
+  //考虑错误的情况
+  function run(g){
+    return new Promise((resolve, reject) => {
+      var iter = g()
+      var generated
+      try{
+        generated = iter.next()
+      }catch(e){
+        reject(e)
+      }
+      function start(){
+        if(!generated.done){
+          generated.value.then(value=>{
+            try{
+              generated = iter.next(value)
+            } catch(e){
+              reject(e)
+            }
+            start()
+          }, reason => {
+            try{
+              generated = iter.throw(reason)
+            } catch(e){
+              reject(e)
+            }
+            start()
+          })
+        } else {
+          resolve(generated.value)
+        }
+      }
+      start()
+    })
+  }
+
+  function spawn(genF) {
+    return new Promise(function(resolve, reject) {
+      const gen = genF();
+      function step(nextF) {
+        let next;
+        try {
+          next = nextF();
+        } catch(e) {
+          return reject(e);
+        }
+        if(next.done) {
+          return resolve(next.value);
+        }
+        Promise.resolve(next.value).then(function(v) {
+          step(function() { return gen.next(v); });
+        }, function(e) {
+          step(function() { return gen.throw(e); });
+        });
+      }
+      step(function() { return gen.next(undefined); });
+    });
+  }
+
+  //不考虑错误的情况
+  function run1(g){
+    return new Promise((resolve, reject) => {
+      var iter = g()
+      var generated
+      // generated = iter.next()
+        // generated.value.then(val=>{
+        //   generated = iter.next(val)
+        //   generated.value.then(val=>{
+        //     generated = iter.next(val)
+        //     generated.value.then(val=>{
+        //       generated = iter.next(val)
+        //     })    
+        //   })
+        // })
+      function start(value){
+        generated = iter.next(value)
+        if (!generated.done){
+          generated.value.then(start)
+        } else {
+          resolve(generated.value)
+        }
+      }
+      start()
+    })
+  }
+
+  //run(g).then(console.log)
+</script>
+</html>
+
+
+
+
+
+
+
+

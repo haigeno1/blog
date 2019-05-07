@@ -1,0 +1,125 @@
+<script type="text/javascript">
+//var str = `"ab,c;d"`,idx = 0
+//var str = '[{"a":1},{"b":2,"c":{"d":[1,2,3]}},2,true,false]'
+var parse = function(){
+  var i = 0
+  var str 
+  return function(strInput){
+    i = 0
+    str = strInput
+    return parseRoute()
+  }
+
+  function parseRoute(){
+    if (str[i] === '"'){
+      return parseStr()
+    } else if (str[i] === "f" || str[i] === "t" || str[i] === "n"){
+      return parseBoolNull()
+    } else if ("0123456789-".indexOf(str[i]) !== -1){
+      return parseNum()
+    } else if (str[i] === "["){
+      return parseArr()
+    } else if (str[i] === "{"){
+      return parseObj()
+    }
+  }
+  
+
+
+  function parseBoolNull(){
+    if (str.substr(i,4) === "true"){
+      i+=4
+      return true
+    }
+    if (str.substr(i,5) === "false"){
+      i+=5
+      return false
+    }
+    if (str.substr(i,4) === "null"){
+      i+=4
+      return null
+    }
+  }
+
+
+
+  function parseNum(){
+    var tmp = "0123456789.Ee-"
+    var res = ""
+    while(tmp.indexOf(str[i]) !== -1){
+      res += str[i]
+      i++
+    }
+    return Number(res)
+  }
+
+
+  function parseStr(){
+    i++
+    var res = ""
+    while (str[i] !== '"'){
+      res += str[i]
+      i++
+    }
+    i++
+    return res
+  }
+
+
+
+  function parseObj(){
+    var res = {}
+    i++
+    if (str[i] === "}")return {}
+    do {
+      var key = parseStr()
+      i++
+      var value = parseRoute()
+      res[key] = value
+    } while(str[i++] === ",")
+    return res
+  }
+
+
+  function parseArr(){
+    i++
+    var res = []
+    while (true){
+      if (str[i] === ","){
+        i++
+        continue
+      }
+      if (str[i] === "]"){
+        i++
+        return res
+      }
+      res.push(parseRoute())
+    }
+  }
+  
+}()
+
+
+  // function nextSymbol(sym){
+  //   var i = idx + 1
+  //   while(str[i] !== sym){
+  //     i++
+  //   }
+  //   return i
+  // }
+
+  // function nextTxt(sym){
+  //   return str.substring(idx,nextSymbol(sym))
+  // }
+
+  // function parse(str) {
+  //   var res,idx = 0
+  //   if(str[idx] === "["){
+  //     res = parseArr()
+  //   } else if (str[idx] === "{"){
+  //     res = parseObj()
+  //   } 
+  //   return res
+  // }
+
+</script>

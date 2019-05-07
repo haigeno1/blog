@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>mini-simulate-regex101</title>
+  <style type="text/css">
+    span.match{
+      background-color: red;
+    }
+    span:empty{
+      border:1px solid blue;
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <input type="text" id="regInput" onkeyup="change();substi()">
+  <p></p>
+  <textarea name="" id="strInput" cols="30" rows="5" onkeyup="change();substi()">fdsfsd</textarea>
+  <div id="outPut"></div>
+  <input type="text" id="substiInput" onkeyup="change();substi()">
+  <div id="substiStr"></div>
+
+
+  <script type="text/javascript">
+    function change(){
+      var regStr = regInput.value
+      try{
+        var re = new RegExp(regStr,"ig")
+      } catch(e){
+        if (e instanceof SyntaxError){
+          outPut.innerHTML = e.toString()
+        } else {
+          throw e
+        }
+      }
+      var str = strInput.value
+      var resHtml = ""
+      var idx = 0
+      while(match = re.exec(str)){
+        resHtml += str.slice(idx,match.index)
+        resHtml += `<span class = "match">${match[0]}</span>`
+        idx = re.lastIndex
+        if (match[0].length === 0){
+          re.lastIndex++
+        }
+      }
+      resHtml += str.slice(idx)
+      outPut.innerHTML = resHtml
+    }
+
+    function substi(){
+      substiStr.innerHTML = strInput.value.replace(new RegExp(regInput.value,"gi"),substiInput.value) 
+    }
+  </script>
+</body>
+</html>
