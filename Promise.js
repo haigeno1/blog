@@ -260,3 +260,35 @@ var Promise = (function() {
   
     return Promise
   })()
+
+
+
+// https://juejin.im/post/5cd113f7f265da03b57b6dd6
+
+// class PromiseA {
+//   constructor(init) {
+//     this.PromiseStatus = 'pending';
+//     var resolve=(val)=>{
+//         if(this.resolveCallback){
+//             this.PromiseStatus="fulfilled"
+//             this.resolveCallback(val);
+//         }
+//     }
+//     if(init){
+//         init(resolve,reject);
+//     }
+//   }
+//   then(onFulfill,onReject) {
+//     this.resolveCallback=onFulfill;
+//     this.rejectCallback=onReject;
+//     return this;
+//   }
+// }
+
+// new PromiseA(function (resolve){
+//   setTimeout(function (){
+//       resolve("hello,from promise 1");
+//   },2000)
+// }).then(function (msg){
+//     console.log(msg);
+// })
