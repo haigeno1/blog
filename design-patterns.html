@@ -57,7 +57,7 @@
 		
 		//完整版，可以先发布后订阅
 		var Event = (function(){
-			var global = this,
+			// var global = this,
 			Event,
 			_default = 'default';
 			Event = function(){
@@ -69,7 +69,6 @@
 				_unshift = Array.prototype.unshift,
 				namespaceCache = {},
 				_create,
-				find,
 				each = function( ary, fn ){
 					var ret;
 					for ( var i = 0, l = ary.length; i < l; i++ ){
@@ -180,11 +179,13 @@
 		})();
 
 		// 测试
-		Event.trigger( 'click', 1 );
-		Event.listen( 'click', function( a ){
-			console.log( a ); // 输出： 1
-		});
 
+		// Event.trigger( 'click', 1 );
+		// Event.listen( 'click', function( a ){
+		// 	console.log( a ); // 输出： 1
+		// });
+
+		debugger;
 		Event.create( 'namespace1' ).listen( 'click', function( a ){
 		});
 		Event.create( 'namespace1' ).trigger( 'click', 1 );
