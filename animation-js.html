@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      .grid {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      .box {
+        width: 100px;
+        height: 100px;
+        background: red;
+      }
+
+      button {
+        padding: 10px;
+        position: fixed;
+        right: 40px;
+        top: 100px;
+        background: black;
+        color: #fff;
+        outline: none;
+      }
+
+      .toggle {
+        top: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="play()">
+      Click Here to Test
+    </button>
+    <button onclick="toggle()" class="toggle">
+      toggle infinity
+    </button>
+    <div class="list"></div>
+    <script>
+      // https://github.com/fanmingfei/animation-base
+
+      var EasingFunctions = {
+        easeInCubic: function(t) {
+          return t * t * t;
+        },
+        easeOutCubic: function(t) {
+          return --t * t * t + 1;
+        }
+      };
+
+      var infinity = false;
+      function toggle() {
+        infinity = !infinity;
+      }
+
+      function move(box, value) {
+        box.style.transform = `translateX(${value}px)`;
+      }
+
+      function getDomString(easing) {
+        return `
+            <div class="grid">
+                <div class="code">
+                ${easing}
+                    <pre><code>animate(0, 300, 1000, move, EasingFunctions.${easing})</code></pre>
+                </div>
+                <div class="demo">
+                    <div class="box" id="${easing}Box">
+                    </div>
+                </div>
+            </div>
+            `;
+      }
+
+      function doMove(easing) {
+        animate(
+          0,
+          300,
+          1000,
+          move.bind(null, document.querySelector(`#${easing}Box`)),
+          EasingFunctions[easing]
+        );
+      }
+
+      let string = "";
+      Object.keys(EasingFunctions).forEach(easing => {
+        string += getDomString(easing);
+      });
+      document.querySelector(".list").innerHTML = string;
+
+      function play() {
+        Object.keys(EasingFunctions).forEach(easing => {
+          doMove(easing);
+        });
+      }
+
+      function animate(start, end, time, callback, timing = t => t) {
+        let startTime = performance.now(); // 设置开始的时间戳
+        let differ = end - start; // 拿到数值差值
+        // 创建每帧之前要执行的函数
+        function loop() {
+          raf = requestAnimationFrame(loop); // 下一帧调用每帧之前要执行的函数
+          const passTime = performance.now() - startTime; // 获取当前时间和开始时间差
+          let per = passTime / time; // 计算当前已过百分比
+          if (per >= 1) {
+            if (!infinity) {
+              per = 1; // 设置为最后的状态
+              cancelAnimationFrame(raf); // 停掉动画
+            } else {
+                while(per >= 1) {
+                    per -= 1
+                }
+            }
+          }
+          const pass = differ * timing(per); // 通过已过时间百分比*开始结束数值差得出当前的数值
+          callback(pass);
+        }
+        let raf = requestAnimationFrame(loop); // 下一帧调用每帧之前要执行的函数
+      }
+    </script>
+
+    <script>
+      document.addEventListener("click", () => {
+        play();
+      });
+      document.querySelector("button").animate &&
+        document.querySelector("button").animate(
+          [
+            // keyframes
+            { transform: "scale(0.8)" },
+            { transform: "scale(1.2)" },
+            { transform: "scale(0.8)" }
+          ],
+          {
+            // timing options
+            duration: 2000,
+            iterations: Infinity
+          }
+        );
+    </script>
+  </body>
+</html>
