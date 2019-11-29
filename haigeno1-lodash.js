@@ -1,6 +1,6 @@
 var haigeno1 = (function(){
   var chunk,difference,differenceBy,differenceWith,drop,dropRight,dropRightWhile,dropWhile,fill,findIndex,findLastIndex,flatten,flattenDeep,flattenDepth,fromPairs,head,indexOf,initial,intersection,intersectionBy,intersectionWith,join,last,lastIndexOf,nth,pull,pullAll,pullAllBy,pullAllWith,reverse,sortedIndex,sortedIndexBy,sortedIndexOf,sortedLastIndex,sortedLastIndexBy,sortedLastIndexOf,sortedUniq,sortedUniqBy,tail,take,takeRight,takeRightWhile,takeWhile,union,unionBy,unionWith,uniq,uniqBy,uniqWith,unzip,unzipWith,without,xor,xorBy,xorWith,zip,zipObject,zipObjectDeep,zipWith,countBy,every,filter,find,findLast,flatMap,flatMapDeep,flatMapDepth,forEach,forEachRight,groupBy,includes,invokeMap,keyBy,map,orderBy,partition,reduce,reduceRight,reject,sample,sampleSize,shuffle,size,some,sortBy,defer,delay,castArray,conformsTo,eq,gt,gte,isArguments,isArray,isArrayBuffer,isArrayLike,isArrayLikeObject,isBoolean,isDate,isElement,isEmpty,isEqual,isEqualWith,isError,isFinite,isFunction,isInteger,isLength,isMap,isMatch,isMatchWith,isNaN,isNative,isNil,isNull,isNumber,isObject,isObjectLike,isPlainObject,isRegExp,isSafeInteger,isSet,isString,isSymbol,isTypedArray,isUndefined,isWeakMap,isWeakSet,lt,lte,toArray,toFinite,toInteger,toLength,toNumber,assign,toSafeInteger,add,ceil,divide,floor,max,maxBy,mean,meanBy,min,minBy,multiply,round,subtract,sum,sumBy,clamp,inRange,random,assignIn,at,defaults,defaultsDeep,findKey,findLastKey,forIn,forInRight,forOwn,forOwnRight,functions,functionsIn,get,has,hasIn,invert,invertBy,invoke,keys,keysIn,mapKeys,mapValues,merge,mergeWith,omit,omitBy,pick,pickBy,result,set,setWith,toPairs,toPairsIn,transform,unset,update,updateWith,values,valuesIn,camelCase,capitalize,deburr,endsWith,escape,escapeRegExp,kebabCase,lowerCase,lowerFirst,pad,padEnd,padStart,parseInt,repeat,replace,snakeCase,split,startCase,startsWith,toLower,toUpper,trim,trimEnd,trimStart,truncate,unescape,upperCase,upperFirst,words,bindAll,defaultTo,range,rangeRight,mixin,times,toPath,uniqueId,cloneDeep,identity,concat,pullAt,matches,property,ary,unary,negate,once,spread,flip,conforms,constant,flow,method,methodOf,nthArg,propertyOf,arrayToLinkedList,parseJson,dellTo3355,isPrime,fibb,getType;
-  return { 
+  return {
     chunk :chunk,
     differenceBy :differenceBy,
     difference :difference,
@@ -313,7 +313,7 @@ var haigeno1 = (function(){
   function differenceWith(array, ...values){
     if (typeof values[values.length-1] === "string" || typeof values[values.length-1] === "function"){
       var comparator = iteratee(values.pop())
-    }     
+    }
     values = [].concat(...values)
     return array.filter(arr => !values.some(value => comparator(arr, value)))
   }
@@ -330,13 +330,13 @@ var haigeno1 = (function(){
     var keysA = Object.keys(a),keysB = Object.keys(b)
     if (keysA.length !== keysB.length){
       return false
-    } 
+    }
     for (var key of keysA){
       if (!keysB.includes(key) || !isEqual(a[key],b[key]) ){
         return false
       }
     }
-    return true 
+    return true
   }
 
   function isEqualWith(value, other, customizer){
@@ -358,7 +358,7 @@ var haigeno1 = (function(){
 
   function getType(val){
     return Object.prototype.toString.call(val).slice(8, -1)
-  }  
+  }
 
 
   function isEmpty(obj){
@@ -483,10 +483,10 @@ var haigeno1 = (function(){
   function isPrimitive(val){
     var type = typeof val
     switch(type){
-      case "number" : 
-      case "string" : 
+      case "number" :
+      case "string" :
       case "boolean" :
-      return true 
+      return true
     }
     return false
   }
@@ -504,8 +504,8 @@ var haigeno1 = (function(){
   }
 
   function isPlainObject(value){
-    return value.constructor === null || value.constructor.name === "Object" 
-  }  
+    return value.constructor === null || value.constructor.name === "Object"
+  }
   function isFinite(value){
     return Number.isFinite(value)
   }
@@ -586,10 +586,10 @@ var haigeno1 = (function(){
       }
       if (number < Number.MIN_SAFE_INTEGER) {
         return Number.MIN_SAFE_INTEGER
-      } 
+      }
       if(isNil(number)){
         return 0
-      }     
+      }
       return parseInt(number)
   }
 
@@ -616,7 +616,7 @@ var haigeno1 = (function(){
   function maxBy(array,iter= identity){
     iter = iteratee(iter)
     return array.reduce((res,item,i,array) => {
-      res = iter(res) > iter(item) ? res : item 
+      res = iter(res) > iter(item) ? res : item
       return res
     })
   }
@@ -631,7 +631,7 @@ var haigeno1 = (function(){
 
   function sum(array){
     return sumBy(array,identity)
-  }    
+  }
 
   function mean(array){
     return meanBy(array,identity)
@@ -748,7 +748,7 @@ var haigeno1 = (function(){
         result.push(array[index])
       }
       return result
-    },[])    
+    },[])
   }
 
   function flatten(array){
@@ -762,13 +762,13 @@ var haigeno1 = (function(){
         }
       }
     }
-    return res    
+    return res
   }
   // flatten1 = [].concat.apply.bind([].concat,[])
   // [].concat.apply([])
   // [].concat
   // function flatten(ary){return [].concat.apply([],ary)}
-  // 
+  //
   // Array.prototype.concat.apply.bind(Array.prototype.concat,[])
   // Array.prototype.concat.apply([])
   // [].concat
@@ -861,7 +861,7 @@ var haigeno1 = (function(){
     if (accumulator === undefined){
       accumulator = values.shift()
       keys.shift()
-    } 
+    }
     for (var i = 0; i < keys.length; i++){
       accumulator = reducer(accumulator,values[i],keys[i],collection)
     }
@@ -874,11 +874,11 @@ var haigeno1 = (function(){
     if (accumulator === undefined){
       accumulator = values.pop()
       keys.pop()
-    } 
+    }
     for (var i = keys.length - 1; i >= 0 ; i--){
       accumulator = reducer(accumulator,values[i],keys[i],collection)
     }
-    return accumulator    
+    return accumulator
   }
 
   function filter(collection,predicate=identity){
@@ -910,7 +910,7 @@ var haigeno1 = (function(){
         break
       }
     }
-    return collection    
+    return collection
   }
 
   function slice(array, start=0, end=array.length){
@@ -931,7 +931,7 @@ var haigeno1 = (function(){
         for (var i = fromIndex; i < collection.length; i++){
           if (isEqual(collection[i],value)){
             return true
-          } 
+          }
         return false
         }
     } else if (typeof collection === "object"){
@@ -940,7 +940,7 @@ var haigeno1 = (function(){
             return true
           }
         }
-      return false      
+      return false
     }
   }
 
@@ -973,14 +973,14 @@ var haigeno1 = (function(){
         return i
       }
     }
-    return -1    
+    return -1
   }
 
   function split(string='', separator, limit){
 
   }
 
-  conforms = source => 
+  conforms = source =>
     obj => Object.entries(source).every(src => src[1](obj[src[0]]))
 
   conformsTo = (object, source) => {
@@ -997,7 +997,7 @@ var haigeno1 = (function(){
       }
     }
     return res
-  }  
+  }
 
   function has(object, path){
     var path = toPath(path)
@@ -1008,11 +1008,11 @@ var haigeno1 = (function(){
       }
       object = object[key]
     }
-    return true   
+    return true
 
     // var tmp = object.__proto__
     // object.__proto__ = null
-    // var res = hasIn(object, path) 
+    // var res = hasIn(object, path)
     // object.__proto__ = tmp
     // return res
   }
@@ -1025,7 +1025,7 @@ var haigeno1 = (function(){
       }
       object = object[key]
     }
-    return true     
+    return true
   }
 
   function invert(object){
@@ -1104,7 +1104,7 @@ var haigeno1 = (function(){
       if (source.hasOwnProperty(key)){
         if (!isEqual(object[key], source[key])){
           return false
-        } 
+        }
       }
     }
     return true
@@ -1114,9 +1114,9 @@ var haigeno1 = (function(){
     for (var key in source){
       if (customizer(object[key]) !== customizer(source[key])){
         return false
-      } 
+      }
     }
-    return true    
+    return true
   }
 
   function negate(predicate){
@@ -1179,7 +1179,7 @@ var haigeno1 = (function(){
       c++
       if (c === 1){
         lastRes = func(...arg)
-      } 
+      }
       return lastRes
     }
   }
@@ -1214,7 +1214,7 @@ var haigeno1 = (function(){
       var key = JSON.stringify(args)
       if (!cache[key]){
         cache[key] = fn.apply(this, args)
-      } 
+      }
       return cache[key]
     }
   }
@@ -1251,7 +1251,7 @@ var haigeno1 = (function(){
         return matchesProperty(func)
     }
   }
-    
+
   function constant(value){
     return value
   }
@@ -1298,7 +1298,7 @@ var haigeno1 = (function(){
     }
     return array
   }
-  
+
 
   function find(collection, predicate=identity, fromIndex=0){
     predicate = iteratee(predicate)
@@ -1364,7 +1364,7 @@ var haigeno1 = (function(){
         return i
       }
     }
-    return -1    
+    return -1
   }
 
   function intersection(...arrays){
@@ -1404,7 +1404,7 @@ var haigeno1 = (function(){
 
   function uniqBy(array, predicate=identity){
     var prep = iteratee(predicate)
-    var res = [] 
+    var res = []
     array.forEach(i => res.some(j => prep(j)===prep(i)) ? res :res.push(i))
     return res
   }
@@ -1483,7 +1483,7 @@ var haigeno1 = (function(){
         i--
       }
     }
-    return array    
+    return array
   }
 
   function pullAllBy(array, values, predicate=identity){
@@ -1495,7 +1495,7 @@ var haigeno1 = (function(){
         i--
       }
     }
-    return array    
+    return array
   }
 
 
@@ -1507,7 +1507,7 @@ var haigeno1 = (function(){
         i--
       }
     }
-    return array  
+    return array
   }
 
   function reverse(array){
@@ -1552,7 +1552,7 @@ var haigeno1 = (function(){
     while (left !== mid){
       mid = Math.floor((left+right)/2)
       if (array[mid] <= value){
-        left = mid 
+        left = mid
       } else if (array[mid] > value) {
         right = mid
       }
@@ -1599,7 +1599,7 @@ var haigeno1 = (function(){
   function forOwnRight(object, iter = identity){
     var predicate = iteratee(iter)
     Object.keys(object).reverse().some(key => !predicate(object[key],key,object))
-    return object    
+    return object
   }
 
   assign = (object,...sources) =>{
@@ -1771,7 +1771,7 @@ var haigeno1 = (function(){
           return _this.call(this,...args,...arguments)
         }
         return _this.apply(context, args.concat(...arguments))
-      } 
+      }
     }
 
     Function.prototype.myBind = function(thisArg, ...bindedArgs) {
@@ -1855,7 +1855,7 @@ var haigeno1 = (function(){
       }).queue(function(next){
           console.log(3)
           next()
-      })    
+      })
       console.log(666)
       //甚至先于后面的同步代码执行
 
@@ -1909,8 +1909,8 @@ var haigeno1 = (function(){
 
       // asyncMap([1,2,3,4],square,function(err,result){
       //   console.log(result)
-      // })      
-    
+      // })
+
     function asyncFilter(ary, asyncPredicate, callback) {
       var result = []
       var count = 0
@@ -1945,8 +1945,8 @@ var haigeno1 = (function(){
       return new Promise(function(resolved){
         resolved(value)
       })
-    }  
-      
+    }
+
     Promise.all = function(promises){
       return new Promise(function(resolve,reject){
         var result = []
@@ -1960,7 +1960,7 @@ var haigeno1 = (function(){
             }
           },reject)
         }
-        
+
       })
     }
 
@@ -1970,7 +1970,17 @@ var haigeno1 = (function(){
           promises[i].then(resolve,reject)
         }
       })
-    }    
+    }
+
+    Promise.prototype.finally = function (callback) {
+      let P = this.constructor;
+      return this.then(
+        value  => P.resolve(callback()).then(() => value),
+        reason => P.resolve(callback()).then(() => { throw reason })
+      );
+    };
+    // Promise.resolve(2).finally(() => {})
+    // Promise.reject(3).finally(() => {})
 
     //node
     class EventEmitter {
@@ -2024,7 +2034,7 @@ var haigeno1 = (function(){
     function callbackify(f) {
       return function(...args){
         var callback = args.pop()
-        
+
         f(...args).then(value => {
           callback(null, value)
         }, reason => {
@@ -2077,7 +2087,7 @@ var haigeno1 = (function(){
     }
     if (val === undefined) {
       return '[object Undefined]'
-    }  
+    }
     return '[object ' + val.constructor.name + ']'
   }
 
@@ -2116,7 +2126,7 @@ var haigeno1 = (function(){
         collection.sort((a,b) => pred(a) > pred(b))
       }
     })
-    return collection    
+    return collection
   }
 
   function flow(...funcs){
@@ -2140,7 +2150,7 @@ var haigeno1 = (function(){
     var params = [];
     return function handler() {
       var args = Array.prototype.slice.call(arguments);
-      Array.prototype.push.apply(params, args); 
+      Array.prototype.push.apply(params, args);
       // OR params.push.apply(this, args);
       if (params.length >= arity) {
         return func.apply(this, params);
@@ -2243,7 +2253,7 @@ var haigeno1 = (function(){
 
   function flatMapDepth(collection,iter=identity,depth=1){
     return flattencollection.map(iter).flattenDepth(depth)
-  }  
+  }
 
   function invokeMap(collection, path, ...args){
     if (typeof path === "string"){
@@ -2292,7 +2302,7 @@ var haigeno1 = (function(){
     var res = []
     set.forEach(i => res.push(collection[keys[i]]))
     return res
-  }  
+  }
 
   function shuffle(collection){
     var keys = Object.keys(collection)
@@ -2328,7 +2338,7 @@ var haigeno1 = (function(){
   findkey = (object, predicate=identity) => {
 
   }
-  
+
 
 
 })()

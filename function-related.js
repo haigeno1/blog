@@ -289,6 +289,18 @@ function throttle(func, wait) {
     }
 }
 
+const throttle = (fn, delay = 500) => {
+    let flag = true;
+    return (...args) => {
+      if (!flag) return;
+      flag = false;
+      setTimeout(() => {
+        fn.apply(this, args);
+        flag = true;
+      }, delay);
+    };
+  };
+
 // 设置定时器,事件会在 n 秒后第一次执行,事件停止触发后依然会再执行一次
 function throttle(func, wait) {
     var timeout;
