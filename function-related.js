@@ -378,7 +378,7 @@ function throttle(func, wait, options) {
 }
 
 
-function deepCopy(p, c) {  // c和p都是对象
+function deepClone(p, c) {  // c和p都是对象
     c = c || {};
     for (let i in p) {
         if (p.hasOwnProperty[i]) {   // 排除继承属性

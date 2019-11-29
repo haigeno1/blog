@@ -113,6 +113,11 @@ Function.prototype.bind2 = function (context) {
     fNOP.prototype = this.prototype;
     fBound.prototype = new fNOP();
     return fBound;
+    // if (this instanceof F) {
+    //     return new _this(...args, ...arguments)
+    //     } else {
+    //     return _this.apply(context, args.concat(...arguments))
+    // }
 }
 
 var value = 2;
@@ -177,12 +182,60 @@ function newOps (ctor) {
     return newObj;
   }
 
+  // https://juejin.im/post/5d2ee123e51d4577614761f8
+  function myNew (fun) {
+    return function () {
+      // 创建一个新对象且将其隐式原型指向构造函数原型
+      let obj = {
+        __proto__ : fun.prototype
+      }
+      // 执行构造函数
+      fun.call(obj, ...arguments)
+      // 返回该对象
+      return obj
+    }
+  }
+
+  function person(name, age) {
+    this.name = name
+    this.age = age
+  }
+// let obj = myNew(person)('chen', 18)
+// {name: "chen", age: 18}
+
 
 Object.create = function (o) {
     function f() { }
     f.prototype = o;
     return new f;
 };
+
+function instanceOf(left, right) {
+    let leftValue = left.__proto__
+    let rightValue = right.prototype
+    while (true) {
+      if (leftValue === null) {
+        return false
+      }
+      if (leftValue === rightValue) {
+        return true
+      }
+      leftValue = leftValue.__proto__
+    }
+  }
+
+
+  // js实现一个继承方法,借用构造函数继承实例属性
+  function Child () {
+    Parent.call(this)
+  }
+  // 寄生继承原型属性
+  (function () {
+    let Tmp = function () {}
+    Tmp.prototype = Parent.prototype
+    Child.prototype = new Tmp()
+  })()
+
 
 
 
