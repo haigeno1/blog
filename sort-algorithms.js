@@ -138,8 +138,8 @@ function swap(arr, i, j) {
 }
 
 
+// 7、堆排序（Heap Sort）
 var len;    // 因为声明的多个函数都需要数据长度，所以把len设置成为全局变量
-
 function buildMaxHeap(arr) {   // 建立大顶堆
     len = arr.length;
     for (var i = Math.floor(len/2); i >= 0; i--) {
@@ -147,8 +147,6 @@ function buildMaxHeap(arr) {   // 建立大顶堆
     }
 }
 
-
-// 7、堆排序（Heap Sort）
 function heapify(arr, i) {     // 堆调整
     var left = 2 * i + 1,
         right = 2 * i + 2,

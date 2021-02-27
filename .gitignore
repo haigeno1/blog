@@ -2,3 +2,10 @@ node_modules/
 .history/
 .DS_Store
 .git
+.idea/
+.vscode/
+build/
+.DS_Store
+plugins/
+webpack.config.dump.js
+tmp/
