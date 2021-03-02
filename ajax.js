@@ -49,6 +49,44 @@ function ajax(params) {
     }
   }
 
+  // 一个简单的jsonp实现，其实就是拼接url，然后将动态添加一个script元素到头部。
+
+  function jsonp(req){
+      var script = document.createElement('script');
+      var url = req.url + '?callback=' + req.callback.name;
+      script.src = url;
+      document.getElementsByTagName('head')[0].appendChild(script); 
+  }
+
+  function hello(res){
+      alert('hello ' + res.data);
+  }
+  jsonp({
+      url : '',
+      callback : hello 
+  });
+
+  var http = require('http');
+  var urllib = require('url');
+
+  var port = 8080;
+  var data = {'data':'world'};
+
+  http.createServer(function(req,res){
+      var params = urllib.parse(req.url,true);
+      if(params.query.callback){
+          console.log(params.query.callback);
+          //jsonp
+          var str = params.query.callback + '(' + JSON.stringify(data) + ')';
+          res.end(str);
+      } else {
+          res.end();
+      }
+      
+  }).listen(port,function(){
+      console.log('jsonp server is on');
+  });
+
 
   // jsonp请求
   function jsonp(params) {
