@@ -338,6 +338,33 @@ var haigeno1 = (function(){
     }
     return true
   }
+  // let obj1 = {
+  //   a: 1,
+  //   b: 2
+  // }
+  // let obj2 = {
+  //   a: 1,
+  //   c: 2
+  // }
+  
+  
+  // /**
+  //  * @returns {boolean}
+  //  */
+  // function deepEqual(obj1, obj2) {
+  //     if (typeof obj1 !== typeof obj2) return false
+  //     if (Object.keys(obj1).length !== Object.keys.length) return false
+      
+  //   for (let key in obj1) {
+  //       if (typeof obj1[key] === "object" && typeof obj2[key] === "object") {
+  //           return deepEqual(obj1[key], obj2[key])
+  //         } else if(obj1[key] !== obj2[key]) {
+  //           return false
+  //         }
+  //     }
+  //     return true
+  // }
+
 
   function isEqualWith(value, other, customizer){
   // ?? If customizer returns undefined, comparisons are handled by the method instead. The customizer is invoked with up to six arguments: (objValue, othValue [, index|key, object, other, stack??]).
