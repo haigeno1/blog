@@ -121,6 +121,38 @@
       }
       return maxAns;
     };
+
+
+
+
+
+    // 回溯
+    // 假设有一个集合 ['foo', 'bar', 'hello', 'world']，求这个集合里单词组合起来的所有不同的结果，比如：
+
+    // foobarhelloworld
+    // barfoohelloworld
+    let arr = ['foo', 'bar', 'hello', 'world']
+    let result = []
+    var count = 0
+    function backtracking(res=[]) {
+        for (let i = 0; i < arr.length; i++) {
+            if(res.indexOf(arr[i]) === -1) {
+                res.push(arr[i])
+                console.log(res)
+                if (res.length === arr.length) {
+                  count++
+                  result.push(res.join(""))
+                  console.log(count, )
+                } else {
+                    backtracking(res)
+                }
+                res.pop()
+            }
+        }
+    }
+    backtracking([])
+
+
   </script>
 </body>
 
