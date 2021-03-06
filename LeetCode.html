@@ -131,22 +131,23 @@
 
     // foobarhelloworld
     // barfoohelloworld
-    let arr = ['foo', 'bar', 'hello', 'world']
+    let arr = ['foo', 'hello', 'world']
     let result = []
     var count = 0
     function backtracking(res=[]) {
         for (let i = 0; i < arr.length; i++) {
             if(res.indexOf(arr[i]) === -1) {
                 res.push(arr[i])
-                console.log(res)
+                console.log("after push", res)
                 if (res.length === arr.length) {
                   count++
                   result.push(res.join(""))
-                  console.log(count, )
+                  console.log("count:",count,res)
                 } else {
                     backtracking(res)
                 }
                 res.pop()
+                console.log("after pop", res)
             }
         }
     }
