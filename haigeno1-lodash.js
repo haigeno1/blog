@@ -823,6 +823,38 @@ var haigeno1 = (function(){
     return tmp
   }
 
+
+  const flattern = arr=>{
+    const res = [];
+    arr.forEach((item)=>{
+        if(Array.isArray(item)){
+            res.push(...flattern(item));
+        }else{
+            res.push(item);
+        }
+    })
+    return res;
+  }
+  flattern(arr);
+
+  /**第五种方式：递归concat */
+  function flattern2(arr){
+      return [].concat(
+          ...arr.map(item=>Array.isArray(item)? flattern2(item):item)
+      )
+  }
+
+  function flattern2(arr){
+    let res = []
+    while(arr.some(Array.isArray)){
+      res =  [].concat(...arr)
+    }
+    return res
+  }
+
+
+
+
   function head(array){
     return array[0]
   }
