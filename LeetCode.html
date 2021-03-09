@@ -156,53 +156,6 @@
 
 
 // 螺旋打印二维数组
-    // #include<iostream>
-    // using namespace std;
-
-    // int     arr[6][5]= 
-    // {{1,           16,           3,           2,             17}, 
-    // {8,           6,             4,           3,             23}, 
-    // {2,           5,             7,           8,             12}, 
-    // {21,         2,             4,           6,             13}, 
-    // {11,       111,           111,       132,         12}, 
-    // {31,       311,           4111,     332,         32} 
-    // };      
-//     输入m * n的二维矩阵，要求从(0,0)开始螺旋向内完成打印输出。 具体打印方法： 1. ➡️先从左向右打印第一行； 2. ⤵️再从上向下打印最后一列； 3. ⬅️然后从右向左打印最后一行； 4. ⤴️最后从下向上打印第一列。
-// 如此往复，完成所有元素打印。
-// 例如：
-// input = [
-//  [ 1,  2,  3,  4,  5],
-// [14, 15, 16, 17,  6],
-// [13, 20, 19, 18,  7],
-// [12, 11, 10,  9,  8],
-// ]
-
-// output = 
-// 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
-    // void main()
-    // {
-    //         // 初始的区间坐标
-    //     int startX = 0, endX = 4;
-    //     int startY = 0, endY = 5;
-        
-    //     while(startX<=endX && startY<=endY)  // 循环条件
-    //     {
-    //         int i;
-    //         for(i=startX; i<=endX; i++)  // 输出上边的行
-    //             cout << arr[startY][i] << " ";
-    //         startY ++;         // 行的开始坐标增加
-    //         for(i=startY; i<=endY; i++)  // 输出右边的列
-    //             cout << arr[i][endX] << " ";
-    //         endX --;           // 列的结束坐标减小
-    //         for(i=endX; i>=startX; i--)   // 输出下边边的行
-    //             cout << arr[endY][i] << " ";
-    //         endY --;           // 行的结束坐标减小
-    //         for(i=endY; i>=startY; i--)  // 输出左边的列
-    //             cout << arr[i][startX] << " ";
-    //         startX ++;         // 列的开始坐标增加
-    //     }
-    // }
-
 
     /**
  * @param {number[][]} matrix
@@ -237,10 +190,27 @@
 //   }
 //   return spiral
 // };
-    /**
- * @param {number[][]} matrix
- * @return {number[]}
- */
+
+
+
+// var spiralOrder = function(matrix) {
+//     let res = []
+//     while(matrix.length>0) {  // cut the top->right->bottom->left sides until matrix is empty
+//         let top = matrix.shift()
+//         let bottom = (matrix.pop() || []).reverse()
+//         let left = [], right = []
+//         for (let i=0; i<matrix.length; i++) {
+//             if (matrix[i].length>0) right.push( matrix[i].pop() )
+//             if (matrix[i].length>0) left.unshift( matrix[i].shift())
+//         }
+//         res.push(...top,...right,...bottom,...left)
+//     }
+//     return res
+// };
+
+
+
+
 // var spiralOrder = function(matrix) {
 //     const m = matrix.length;
 //     const n = matrix[0].length;
