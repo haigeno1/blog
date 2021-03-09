@@ -154,6 +154,130 @@
     backtracking([])
 
 
+
+// 螺旋打印二维数组
+    // #include<iostream>
+    // using namespace std;
+
+    // int     arr[6][5]= 
+    // {{1,           16,           3,           2,             17}, 
+    // {8,           6,             4,           3,             23}, 
+    // {2,           5,             7,           8,             12}, 
+    // {21,         2,             4,           6,             13}, 
+    // {11,       111,           111,       132,         12}, 
+    // {31,       311,           4111,     332,         32} 
+    // };      
+//     输入m * n的二维矩阵，要求从(0,0)开始螺旋向内完成打印输出。 具体打印方法： 1. ➡️先从左向右打印第一行； 2. ⤵️再从上向下打印最后一列； 3. ⬅️然后从右向左打印最后一行； 4. ⤴️最后从下向上打印第一列。
+// 如此往复，完成所有元素打印。
+// 例如：
+// input = [
+//  [ 1,  2,  3,  4,  5],
+// [14, 15, 16, 17,  6],
+// [13, 20, 19, 18,  7],
+// [12, 11, 10,  9,  8],
+// ]
+
+// output = 
+// 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+    // void main()
+    // {
+    //         // 初始的区间坐标
+    //     int startX = 0, endX = 4;
+    //     int startY = 0, endY = 5;
+        
+    //     while(startX<=endX && startY<=endY)  // 循环条件
+    //     {
+    //         int i;
+    //         for(i=startX; i<=endX; i++)  // 输出上边的行
+    //             cout << arr[startY][i] << " ";
+    //         startY ++;         // 行的开始坐标增加
+    //         for(i=startY; i<=endY; i++)  // 输出右边的列
+    //             cout << arr[i][endX] << " ";
+    //         endX --;           // 列的结束坐标减小
+    //         for(i=endX; i>=startX; i--)   // 输出下边边的行
+    //             cout << arr[endY][i] << " ";
+    //         endY --;           // 行的结束坐标减小
+    //         for(i=endY; i>=startY; i--)  // 输出左边的列
+    //             cout << arr[i][startX] << " ";
+    //         startX ++;         // 列的开始坐标增加
+    //     }
+    // }
+
+
+    /**
+ * @param {number[][]} matrix
+ * @return {number[]}
+ */
+// var spiralOrder = function(matrix) {
+//   if(matrix.length < 1 || matrix[0].length < 2) return matrix
+//   let spiral =[]
+//   let startY = 0
+//   let endY = matrix[0].length-1
+//   let startX = 0
+//   let endX = matrix.length-1
+//   while(startX <= endX && startY <= endY) {
+//       for(let i = startY ; i<=endY ; i++) {
+//           spiral.push(matrix[startX][i])
+//       }
+//       if(startX == endX) break
+//       for(let i = startX+1;i<=endX;i++) {
+//           spiral.push(matrix[i][endY])
+//       }
+//       for(let i = endY-1;i>=startY;i--) {
+//           spiral.push(matrix[endX][i])
+//       }
+//       if(startY == endY) break      
+//       for(let i = endX-1;i>=startY+1;i--){
+//           spiral.push(matrix[i][startY])
+//       }
+//       startY++
+//       endY--
+//       startX++
+//       endX--
+//   }
+//   return spiral
+// };
+    /**
+ * @param {number[][]} matrix
+ * @return {number[]}
+ */
+// var spiralOrder = function(matrix) {
+//     const m = matrix.length;
+//     const n = matrix[0].length;
+//     const dx = [0, 1, 0, -1];
+//     const dy = [1, 0, -1, 0];
+//     const answer = [];
+//     const visit = Array.from(Array(m), () => Array(n).fill(false));
+    
+//     function inRange(x, y) {
+//         return (0 <= x && x < m && 0 <= y && y < n);
+//     }
+    
+//     function dfs(x, y, dir) {
+//         if (!inRange(x, y) || visit[x][y]) return;
+        
+//         visit[x][y] = true;
+//         answer.push(matrix[x][y]);
+        
+//         let nx = x + dx[dir];
+//         let ny = y + dy[dir];
+        
+//         if (inRange(nx, ny) && !visit[nx][ny]) {
+//             dfs(nx, ny, dir);
+//         } else {
+//             dir = (dir + 1) % 4;
+//             nx = x + dx[dir];
+//             ny = y + dy[dir];
+            
+//             dfs(nx, ny, dir);
+//         }
+//     }
+    
+//     dfs(0, 0, 0);
+    
+//     return answer;
+// };
+
   </script>
 </body>
 
