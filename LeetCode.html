@@ -164,7 +164,7 @@
     // 输出 a1A, a1b, a1c
 
     function back(arr,cur, i) {
-      arr[i].forEach((it,i) => {
+      arr[i].forEach(it => {
         cur.push(it)
         if (cur.length === arr.length) {
           console.log(cur)
