@@ -154,6 +154,27 @@
     backtracking([])
 
 
+    // 数组排列组合。
+    // var arr = [
+    //   ["a","b","c","d"],
+    //   [1,2],
+    //   ["A","B","C"],
+    //   ...
+    // ]
+    // 输出 a1A, a1b, a1c
+
+    function back(arr,cur, i) {
+      arr[i].forEach((it,i) => {
+        cur.push(it)
+        if (cur.length === arr.length) {
+          console.log(cur)
+        } else {
+          back(arr,cur, i+1)
+        }
+        cur.pop()
+      })  
+    }
+    back(arr,[],0)
 
 // 螺旋打印二维数组
 // 54: https://leetcode.com/problems/spiral-matrix/
