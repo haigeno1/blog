@@ -181,7 +181,9 @@
     // arr = [img2, img3 ... img100]
     // // Image.onload
     let count = 0
-    function loadControl(arr,index) {
+    let index = 0
+    function loadControl(arr) {
+      if (index >= arr.length) return
       if (count < 3) {
         count++
         loadImage(arr[index])
@@ -191,7 +193,7 @@
           .then(loadControl(arr,++index))
       }
     }
-    loadControl(arr, 0)
+    loadControl(arr)
 
 // 螺旋打印二维数组
 // 54: https://leetcode.com/problems/spiral-matrix/
