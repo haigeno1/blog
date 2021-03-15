@@ -67,8 +67,38 @@
       return res;
     }
 
+    // https://leetcode.com/problems/reverse-linked-list/
+    /**
+     * @param {ListNode} head
+     * @return {ListNode}
+     */
+    const reverseList = function (head) {
+      let prevNode = null;
+      let currNode = head;
+      while (currNode) [currNode.next, prevNode, currNode] = [prevNode, currNode, currNode.next];
+      return prevNode;
+    }
 
+    var reverseList = function (head) {
+      let prev = null;
+      let next = null;
+      while (head != null) {
+        next = head.next;
+        head.next = prev;
+        prev = head;
+        head = next;
+      }
+      return prev;
 
+    };
+    // 递归
+    var reverseList = function (head) {
+      if (!head || !head.next) return head;
+      const tail = reverseList(head.next);
+      head.next.next = head; // reverse pointers
+      head.next = null; // avoid circular loop
+      return tail; // new head
+    };
 
     // 反转链表 https://blog.csdn.net/weixin_36769175/article/details/81165741
     var reverseList = function (head) {
@@ -163,18 +193,18 @@
     // ]
     // 输出 a1A, a1b, a1c
 
-    function back(arr,cur, i) {
+    function back(arr, cur, i) {
       arr[i].forEach(it => {
         cur.push(it)
         if (cur.length === arr.length) {
           console.log(cur)
         } else {
-          back(arr,cur, i+1)
+          back(arr, cur, i + 1)
         }
         cur.pop()
-      })  
+      })
     }
-    back(arr,[],0)
+    back(arr, [], 0)
 
     // 利用 Promise 封装一个异步加载图片的方法，并限制并发个数，即同时请求的个数不超过3个。
     // loadImage ，loadControl
@@ -187,10 +217,10 @@
       if (count < 3) {
         count++
         loadImage(arr[index])
-          .then(()=>{
+          .then(() => {
             count--
           })
-          .then(loadControl(arr,++index))
+          .then(loadControl(arr, ++index))
       }
     }
     loadControl(arr)
