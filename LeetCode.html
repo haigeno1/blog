@@ -89,15 +89,6 @@
         head = next;
       }
       return prev;
-
-    };
-    // 递归
-    var reverseList = function (head) {
-      if (!head || !head.next) return head;
-      const tail = reverseList(head.next);
-      head.next.next = head; // reverse pointers
-      head.next = null; // avoid circular loop
-      return tail; // new head
     };
 
     // 反转链表 https://blog.csdn.net/weixin_36769175/article/details/81165741
@@ -117,6 +108,30 @@
       }
       return list;
     };
+
+
+    // 递归
+    var reverseList = function (head) {
+      if (!head || !head.next) return head;
+      const tail = reverseList(head.next);
+      head.next.next = head; // reverse pointers
+      head.next = null; // avoid circular loop
+      return tail; // new head
+    };
+
+    var reverseList = function (head) {
+      if (!head) return null;
+      function reverse(node, prev) {
+        const next = node.next;
+        node.next = prev;
+        if (!next) return node;
+        return reverse(next, node);
+      }
+      return reverse(head, null);
+    };
+
+
+
 
 
     // https://leetcode.com/submissions/detail/227953017/
