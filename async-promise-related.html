@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+</body>
+<script>
+  // 1.1 使用setTimeout实现一个mySetInterval;
+  // https://juejin.cn/post/6844903839934447629
+  function mySetInterval(callback, t) {
+    callback()
+    setTimeout(() => mySetInterval(callback, t), t)
+  }
+
+  var id
+  function mySetInterval(callback, t) {
+    // callback()
+    // setTimeout(()=>mySetInterval(callback, t), t)
+
+    // function f() {
+    //   callback()
+    //   setTimeout(f,t)
+    // }
+    // setTimeout(f, t)
+
+    function f() {
+      callback()
+      id = setTimeout(f, t)
+    }
+    id = setTimeout(f, t)
+    return id
+  }
+
+
+  var id = 1
+  var obj = {}
+  function mySetInterval(callback, t) {
+    // callback()
+    // setTimeout(()=>mySetInterval(callback, t), t)
+
+    // function f() {
+    //   callback()
+    //   setTimeout(f,t)
+    // }
+    // setTimeout(f, t)
+
+    // var id
+    id++
+    function f() {
+      callback()
+      obj[id] = setTimeout(f, t)
+    }
+    obj[id] = setTimeout(f, t)
+    return id
+  }
+
+  // 使下面的调用每1000毫秒打印字符串'x'
+  mySetInterval(() => {
+    console.log('x')
+  }, 1000);
+
+  // 1.2 实现一个myClearInterval,可以终止一个mySetInterval的执行;
+  // 提示：使用clearTimeout
+  function myClearInterval(timer) {
+    clearTimeout(obj[timer])
+  }
+
+  // usage:
+  const timer = mySetInterval(() => {
+    console.log('x')
+  }, 1000);
+
+  myClearInterval(timer);
+
+  // 3
+  // 业务需求中，经常有 只需要最后一次请求的结果（比如搜索）编写一个高阶函数，传递旧请求方法（执行后返回 promise），返回一个新方法。
+  // 连续触发时，若上一次 promise 执行未结束则直接废弃，只有最后一次 promise 会触发then/reject。
+
+  /**
+  * 只有最后一次promise会then与reject
+  * @param {function} promiseFunction
+  * promiseFunction 示例： () => fetch('data')
+  */
+
+  function lastPromise(promiseFunction) {
+    // var id
+    var queue = []
+    return function f() {
+      // clearTimeout(id)
+      const fun = promiseFunction()
+      queue.push(fun)
+      // setTimeout(() => {
+      //   queue[queue.length-1]
+      //   return promiseFunction()
+      // })
+      return new Promise((resolve) => {
+        if (queue.indexOf(fun) === queue.length - 1) {
+          resolve(fun)
+        }
+      })
+    }
+  }
+
+  // 示例
+  let count = 1;
+  let promiseFunction = () =>
+    new Promise(rs =>
+      window.setTimeout(() => {
+        rs(count++);
+      })
+    );
+
+  let lastFn = lastPromise(promiseFunction);
+
+  lastFn().then(console.log); // 无输出
+  lastFn().then(console.log); // 无输出
+  lastFn().then(console.log); // 3
+
+  let executeCount = 0;
+  const targetFn = async nums => {
+    executeCount++;
+    return nums.map(num => 2 * num + 1);
+  };
+
+  const batcher = (fn) => {
+    // todo batch logic
+    let queue = []
+    let len = []
+    // let obj = {}
+    return function f(arr) {
+      queue.push(arr)
+      len.push(arr.length)
+      // queue = queue.concat(...arr)
+      return new Promise((resolve) => {
+        if (queue.indexOf(arr) === queue.length - 1) {
+          let res = fn([].concat(...queue))
+          for (let i = 0; i < len.length; i++) {
+            // res.slice(len[i]
+          }
+          resolve(res)
+        }
+      })
+    }
+  }
+
+  const batcher = f => {
+    let nums = [];
+    const p = Promise.resolve().then(_ => f(nums));
+
+    return arr => {
+      let start = nums.length;
+      nums = nums.concat(arr);
+      let end = nums.length;
+      return p.then(ret => ret.slice(start, end));
+    };
+  };
+
+  const batchedFn = batcher(targetFn);
+
+  const main = async () => {
+    const [result1, result2, result3] = await Promise.all([
+      batchedFn([1, 2, 3]),
+      batchedFn([4, 5]),
+      batchedFn([6, 7]),
+    ]);
+
+    console.log(result1, result2, result3) // 
+    console.log(executeCount)  // 预期为 1
+  }
+
+  main()
+
+
+
+  // batch 一个函数，让它在并发调用时只被执行一次
+  // https://www.qiyuandi.com/zhanzhang/zonghe/13965.html
+
+  function swap(arr, i, j) {
+    let tmp = arr[i]
+    arr[i] = arr[j]
+    arr[j] = tmp
+  }
+
+  const fn = (...args) => {
+    for (const arg of args) {
+      console.log(arg);
+    }
+    let res = ""
+    let res0 = args[0]
+    for (let i = 1; i < args.length; i++) {
+      res += res0[i - 1] + args[i]
+    }
+    return res += res0[res0.length - 1]
+  };
+  const [a, b] = [1, 2];
+  fn`111${a} + ${b} = ${a + b}222`;
+
+  fn('1+2=3')
+  '1+2=3'
+
+
+
+// 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
+  /* LazyPig("Peggy")输出:
+  Hello，I'm Peggy！
+  
+  LazyPig("Peggy").sleep(10).eat("dinner")输出
+  Hello，I'm Peggy！
+  //等待10秒..
+  Wake up after 10
+  Eat dinner~
+  
+  LazyPig("Peggy").eat("dinner").eat("supper")输出
+  Hello，I'm Peggy！
+  Eat dinner~
+  Eat supper~
+  
+  以此类推。
+  */
+</script>
+
+</html>

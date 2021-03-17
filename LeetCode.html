@@ -102,7 +102,7 @@
       }
       return prev;
     };
-    
+
     // if (!head) return head
     // let newHead = new ListNode(head.val, null)
     // while (head.next) {
@@ -276,232 +276,281 @@
     }
     loadControl(arr)
 
-// 螺旋打印二维数组
-// 54: https://leetcode.com/problems/spiral-matrix/
+    // 螺旋打印二维数组
+    // 54: https://leetcode.com/problems/spiral-matrix/
 
     /**
  * @param {number[][]} matrix
  * @return {number[]}
  */
-// var spiralOrder = function(matrix) {
-//   if(matrix.length < 1 || matrix[0].length < 2) return matrix
-//   let spiral =[]
-//   let startY = 0
-//   let endY = matrix[0].length-1
-//   let startX = 0
-//   let endX = matrix.length-1
-//   while(startX <= endX && startY <= endY) {
-//       for(let i = startY ; i<=endY ; i++) {
-//           spiral.push(matrix[startX][i])
-//       }
-//       if(startX == endX) break
-//       for(let i = startX+1;i<=endX;i++) {
-//           spiral.push(matrix[i][endY])
-//       }
-//       for(let i = endY-1;i>=startY;i--) {
-//           spiral.push(matrix[endX][i])
-//       }
-//       if(startY == endY) break      
-//       for(let i = endX-1;i>=startY+1;i--){
-//           spiral.push(matrix[i][startY])
-//       }
-//       startY++
-//       endY--
-//       startX++
-//       endX--
-//   }
-//   return spiral
-// };
+    // var spiralOrder = function(matrix) {
+    //   if(matrix.length < 1 || matrix[0].length < 2) return matrix
+    //   let spiral =[]
+    //   let startY = 0
+    //   let endY = matrix[0].length-1
+    //   let startX = 0
+    //   let endX = matrix.length-1
+    //   while(startX <= endX && startY <= endY) {
+    //       for(let i = startY ; i<=endY ; i++) {
+    //           spiral.push(matrix[startX][i])
+    //       }
+    //       if(startX == endX) break
+    //       for(let i = startX+1;i<=endX;i++) {
+    //           spiral.push(matrix[i][endY])
+    //       }
+    //       for(let i = endY-1;i>=startY;i--) {
+    //           spiral.push(matrix[endX][i])
+    //       }
+    //       if(startY == endY) break      
+    //       for(let i = endX-1;i>=startY+1;i--){
+    //           spiral.push(matrix[i][startY])
+    //       }
+    //       startY++
+    //       endY--
+    //       startX++
+    //       endX--
+    //   }
+    //   return spiral
+    // };
 
 
 
-// var spiralOrder = function(matrix) {
-//     let res = []
-//     while(matrix.length>0) {  // cut the top->right->bottom->left sides until matrix is empty
-//         let top = matrix.shift()
-//         let bottom = (matrix.pop() || []).reverse()
-//         let left = [], right = []
-//         for (let i=0; i<matrix.length; i++) {
-//             if (matrix[i].length>0) right.push( matrix[i].pop() )
-//             if (matrix[i].length>0) left.unshift( matrix[i].shift())
-//         }
-//         res.push(...top,...right,...bottom,...left)
-//     }
-//     return res
-// };
+    // var spiralOrder = function(matrix) {
+    //     let res = []
+    //     while(matrix.length>0) {  // cut the top->right->bottom->left sides until matrix is empty
+    //         let top = matrix.shift()
+    //         let bottom = (matrix.pop() || []).reverse()
+    //         let left = [], right = []
+    //         for (let i=0; i<matrix.length; i++) {
+    //             if (matrix[i].length>0) right.push( matrix[i].pop() )
+    //             if (matrix[i].length>0) left.unshift( matrix[i].shift())
+    //         }
+    //         res.push(...top,...right,...bottom,...left)
+    //     }
+    //     return res
+    // };
 
 
 
 
-// var spiralOrder = function(matrix) {
-//     const m = matrix.length;
-//     const n = matrix[0].length;
-//     const dx = [0, 1, 0, -1];
-//     const dy = [1, 0, -1, 0];
-//     const answer = [];
-//     const visit = Array.from(Array(m), () => Array(n).fill(false));
+    // var spiralOrder = function(matrix) {
+    //     const m = matrix.length;
+    //     const n = matrix[0].length;
+    //     const dx = [0, 1, 0, -1];
+    //     const dy = [1, 0, -1, 0];
+    //     const answer = [];
+    //     const visit = Array.from(Array(m), () => Array(n).fill(false));
 
-//     function inRange(x, y) {
-//         return (0 <= x && x < m && 0 <= y && y < n);
-//     }
+    //     function inRange(x, y) {
+    //         return (0 <= x && x < m && 0 <= y && y < n);
+    //     }
 
-//     function dfs(x, y, dir) {
-//         if (!inRange(x, y) || visit[x][y]) return;
+    //     function dfs(x, y, dir) {
+    //         if (!inRange(x, y) || visit[x][y]) return;
 
-//         visit[x][y] = true;
-//         answer.push(matrix[x][y]);
+    //         visit[x][y] = true;
+    //         answer.push(matrix[x][y]);
 
-//         let nx = x + dx[dir];
-//         let ny = y + dy[dir];
+    //         let nx = x + dx[dir];
+    //         let ny = y + dy[dir];
 
-//         if (inRange(nx, ny) && !visit[nx][ny]) {
-//             dfs(nx, ny, dir);
-//         } else {
-//             dir = (dir + 1) % 4;
-//             nx = x + dx[dir];
-//             ny = y + dy[dir];
+    //         if (inRange(nx, ny) && !visit[nx][ny]) {
+    //             dfs(nx, ny, dir);
+    //         } else {
+    //             dir = (dir + 1) % 4;
+    //             nx = x + dx[dir];
+    //             ny = y + dy[dir];
 
-//             dfs(nx, ny, dir);
-//         }
-//     }
+    //             dfs(nx, ny, dir);
+    //         }
+    //     }
 
-//     dfs(0, 0, 0);
+    //     dfs(0, 0, 0);
 
-//     return answer;
-// };
-
-
-// var spiralOrder = function(matrix) {
-//     if (!matrix.length) return [];
-//     // define valid point
-//     let valid = (node) => {
-//         let [i, j] = node;
-//         if (!(0 <= i && i < matrix.length)) return false;
-//         if (!(0 <= j && j < matrix[0].length)) return false;
-//         return true;
-//     }
-//     // define possible moves
-//     let moves = new Map();
-//     moves.set('up', ([i, j]) => [i-1, j]);
-//     moves.set('right', ([i, j]) => [i, j+1]);
-//     moves.set('down', ([i, j]) => [i+1, j]);
-//     moves.set('left', ([i, j]) => [i, j-1]);
-//     // standard dfs
-//     let parents = new Set();
-//     let output = [matrix[0][0]];
-//     let dfs = (node) => {
-//         // not revisiting 
-//         if (parents.has(node.toString())) return;
-//         parents.add(node.toString());
-//         // keep exploring children
-//         for (let move of moves.values()) {
-//             // link list like movement
-//             let next_node = node;
-//             while (valid(move(next_node)) && !parents.has(move(next_node).toString())) {
-//                 // no revisiting
-//                 parents.add(next_node.toString());
-//                 next_node = move(next_node);
-//                 let [i, j] = next_node;
-//                 output.push(matrix[i][j]);
-//             }
-//             dfs(next_node);
-//         }
-//     }
-//     dfs([0,0]);
-//     return output;
-// };
+    //     return answer;
+    // };
 
 
-// var spiralOrder = function(array) {
-//     if (!array.length ) return [];
-//     const m = array.length;
-// 	const n = array[0].length;
-
-// 	let result = [];
-// 	let startRow = 0;
-// 	let startCol = 0;
-// 	let endRow = m-1;
-// 	let endCol = n-1;
-
-// 	while (true) {
-// 		if (hasAllElements(array, result)) break;
-// 		traversePerimeter(array, startRow, startCol, endRow, endCol, result)
-// 		startRow += 1;
-// 		startCol += 1;
-// 		endRow -= 1;
-// 		endCol -= 1;
-// 	}
-// 	return result;
-// };
-// var spiralOrder = function(array) {
-//     if (!array.length ) return [];
-//     const m = array.length;
-// 	const n = array[0].length;
-
-// 	let result = [];
-// 	let startRow = 0;
-// 	let startCol = 0;
-// 	let endRow = m-1;
-// 	let endCol = n-1;
-
-// 	while (true) {
-// 		if (hasAllElements(array, result)) break;
-// 		traversePerimeter(array, startRow, startCol, endRow, endCol, result)
-// 		startRow += 1;
-// 		startCol += 1;
-// 		endRow -= 1;
-// 		endCol -= 1;
-// 	}
-// 	return result;
-// };
-
-// function traversePerimeter(array, startRow, startCol, endRow, endCol, result) {
-//     let i, j;
-//     i = startRow;
-//     for (j=startCol; j<=endCol && !hasAllElements(array, result); j++) {
-//         result.push(array[i][j]);
-//     }
-
-//     j = endCol;
-//     for (i=startRow+1; i<=endRow && !hasAllElements(array, result); i++) {
-//         result.push(array[i][j]);
-//     }
-//     i = endRow;
-//     for (j=endCol-1; j>=startCol && !hasAllElements(array, result); j--) {
-//         result.push(array[i][j]);
-//     }
-//     j = startRow;
-//     for (i=endRow-1; i>startCol && !hasAllElements(array, result); i--) {
-//         result.push(array[i][j]);
-//     }
-// }
-
-// function hasAllElements(array, result) {
-// 	const m = array.length;
-// 	const n = array[0].length;
-// 	return m*n === result.length;
-// }
+    // var spiralOrder = function(matrix) {
+    //     if (!matrix.length) return [];
+    //     // define valid point
+    //     let valid = (node) => {
+    //         let [i, j] = node;
+    //         if (!(0 <= i && i < matrix.length)) return false;
+    //         if (!(0 <= j && j < matrix[0].length)) return false;
+    //         return true;
+    //     }
+    //     // define possible moves
+    //     let moves = new Map();
+    //     moves.set('up', ([i, j]) => [i-1, j]);
+    //     moves.set('right', ([i, j]) => [i, j+1]);
+    //     moves.set('down', ([i, j]) => [i+1, j]);
+    //     moves.set('left', ([i, j]) => [i, j-1]);
+    //     // standard dfs
+    //     let parents = new Set();
+    //     let output = [matrix[0][0]];
+    //     let dfs = (node) => {
+    //         // not revisiting 
+    //         if (parents.has(node.toString())) return;
+    //         parents.add(node.toString());
+    //         // keep exploring children
+    //         for (let move of moves.values()) {
+    //             // link list like movement
+    //             let next_node = node;
+    //             while (valid(move(next_node)) && !parents.has(move(next_node).toString())) {
+    //                 // no revisiting
+    //                 parents.add(next_node.toString());
+    //                 next_node = move(next_node);
+    //                 let [i, j] = next_node;
+    //                 output.push(matrix[i][j]);
+    //             }
+    //             dfs(next_node);
+    //         }
+    //     }
+    //     dfs([0,0]);
+    //     return output;
+    // };
 
 
-function f() {} 
-f1=last(f)
-function last(f) {
-  var queue = []
-  return function() {
-    let tmp = f()
-    queue.push(tmp)
-    return new Promise((resolve) => {
-      if (queue.indexOf(tmp) === queue.length-1) {
-        resolve()
+    // var spiralOrder = function(array) {
+    //     if (!array.length ) return [];
+    //     const m = array.length;
+    // 	const n = array[0].length;
+
+    // 	let result = [];
+    // 	let startRow = 0;
+    // 	let startCol = 0;
+    // 	let endRow = m-1;
+    // 	let endCol = n-1;
+
+    // 	while (true) {
+    // 		if (hasAllElements(array, result)) break;
+    // 		traversePerimeter(array, startRow, startCol, endRow, endCol, result)
+    // 		startRow += 1;
+    // 		startCol += 1;
+    // 		endRow -= 1;
+    // 		endCol -= 1;
+    // 	}
+    // 	return result;
+    // };
+    // var spiralOrder = function(array) {
+    //     if (!array.length ) return [];
+    //     const m = array.length;
+    // 	const n = array[0].length;
+
+    // 	let result = [];
+    // 	let startRow = 0;
+    // 	let startCol = 0;
+    // 	let endRow = m-1;
+    // 	let endCol = n-1;
+
+    // 	while (true) {
+    // 		if (hasAllElements(array, result)) break;
+    // 		traversePerimeter(array, startRow, startCol, endRow, endCol, result)
+    // 		startRow += 1;
+    // 		startCol += 1;
+    // 		endRow -= 1;
+    // 		endCol -= 1;
+    // 	}
+    // 	return result;
+    // };
+
+    // function traversePerimeter(array, startRow, startCol, endRow, endCol, result) {
+    //     let i, j;
+    //     i = startRow;
+    //     for (j=startCol; j<=endCol && !hasAllElements(array, result); j++) {
+    //         result.push(array[i][j]);
+    //     }
+
+    //     j = endCol;
+    //     for (i=startRow+1; i<=endRow && !hasAllElements(array, result); i++) {
+    //         result.push(array[i][j]);
+    //     }
+    //     i = endRow;
+    //     for (j=endCol-1; j>=startCol && !hasAllElements(array, result); j--) {
+    //         result.push(array[i][j]);
+    //     }
+    //     j = startRow;
+    //     for (i=endRow-1; i>startCol && !hasAllElements(array, result); i--) {
+    //         result.push(array[i][j]);
+    //     }
+    // }
+
+    // function hasAllElements(array, result) {
+    // 	const m = array.length;
+    // 	const n = array[0].length;
+    // 	return m*n === result.length;
+    // }
+
+
+    // 2.
+    // 反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。
+
+    // 说明:
+    // 1 ≤ m ≤ n ≤ 链表长度。
+
+    // 示例:
+
+    // 输入: 1->2->3->4->5->NULL, m = 2, n = 4
+    // 输出: 1->4->3->2->5->NULL
+
+    function ListNode(val) {
+      this.val = val
+      this.next = null
+    }
+
+    const head = []
+
+    for (let index = 0; index < 5; index++) {
+      head[index] = new ListNode(index + 1)
+    }
+
+    head[0].next = head[1]
+    head[1].next = head[2]
+    head[2].next = head[3]
+    head[3].next = head[4]
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val) {
+     *     this.val = val;
+     *     this.next = null;
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @param {number} m
+     * @param {number} n
+     * @return {ListNode}
+     */
+    var reverseBetween = function (head, m, n) {
+
+      let start = findN(head, m)
+      let end = findN(head, n)
+
+      var list = head;
+      var p = list;
+      var q = null;
+
+      if (p == null)
+        return null;
+
+      while (p.next !== end) {
+        q = p.next;
+        p.next = q.next;
+        q.next = list;
+        list = q;
       }
-    })
-  }
-}
+      return head;
+    };
 
-f1().then(console.log)
-f1().then(console.log)
-f1().then(console.log)
-f1().then(console.log)
+    function findN(head, index) {
+      let res = head
+      for (let i = 0; i < index; i++) {
+        res = res.next
+      }
+      return res
+    }
 
 
   </script>
