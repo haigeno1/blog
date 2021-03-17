@@ -94,6 +94,7 @@
       const fun = promiseFunction()
       queue.push(fun)
       return new Promise((resolve) => {
+        // 下面似乎有问题？？总是为true
         if (queue.indexOf(fun) === queue.length - 1) {
           resolve(fun)
         }
