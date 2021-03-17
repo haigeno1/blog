@@ -89,16 +89,10 @@
   */
 
   function lastPromise(promiseFunction) {
-    // var id
     var queue = []
     return function f() {
-      // clearTimeout(id)
       const fun = promiseFunction()
       queue.push(fun)
-      // setTimeout(() => {
-      //   queue[queue.length-1]
-      //   return promiseFunction()
-      // })
       return new Promise((resolve) => {
         if (queue.indexOf(fun) === queue.length - 1) {
           resolve(fun)
@@ -122,32 +116,41 @@
   lastFn().then(console.log); // 无输出
   lastFn().then(console.log); // 3
 
+
+
+
+
+
+
+  // batch 一个函数，让它在并发调用时只被执行一次
+  // https://www.qiyuandi.com/zhanzhang/zonghe/13965.html
+
   let executeCount = 0;
   const targetFn = async nums => {
     executeCount++;
     return nums.map(num => 2 * num + 1);
   };
 
-  const batcher = (fn) => {
-    // todo batch logic
-    let queue = []
-    let len = []
-    // let obj = {}
-    return function f(arr) {
-      queue.push(arr)
-      len.push(arr.length)
-      // queue = queue.concat(...arr)
-      return new Promise((resolve) => {
-        if (queue.indexOf(arr) === queue.length - 1) {
-          let res = fn([].concat(...queue))
-          for (let i = 0; i < len.length; i++) {
-            // res.slice(len[i]
-          }
-          resolve(res)
-        }
-      })
-    }
-  }
+  // const batcher = (fn) => {
+  //   // todo batch logic
+  //   let queue = []
+  //   let len = []
+  //   // let obj = {}
+  //   return function f(arr) {
+  //     queue.push(arr)
+  //     len.push(arr.length)
+  //     // queue = queue.concat(...arr)
+  //     return new Promise((resolve) => {
+  //       if (queue.indexOf(arr) === queue.length - 1) {
+  //         let res = fn([].concat(...queue))
+  //         for (let i = 0; i < len.length; i++) {
+  //           // res.slice(len[i]
+  //         }
+  //         resolve(res)
+  //       }
+  //     })
+  //   }
+  // }
 
   const batcher = f => {
     let nums = [];
@@ -178,14 +181,8 @@
 
 
 
-  // batch 一个函数，让它在并发调用时只被执行一次
-  // https://www.qiyuandi.com/zhanzhang/zonghe/13965.html
 
-  function swap(arr, i, j) {
-    let tmp = arr[i]
-    arr[i] = arr[j]
-    arr[j] = tmp
-  }
+
 
   const fn = (...args) => {
     for (const arg of args) {
@@ -206,7 +203,11 @@
 
 
 
-// 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
+
+
+
+
+  // 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
   /* LazyPig("Peggy")输出:
   Hello，I'm Peggy！
   
@@ -223,6 +224,134 @@
   
   以此类推。
   */
+
+  function LazyPig(v) {
+    return new F(v)
+  }
+  function F(v) {
+    console.log(`Hello，I'm ${v}！`)
+    this.tmp = Promise.resolve()
+  }
+  F.prototype = {
+    sleep(t) {
+      this.tmp = new Promise((resolve) => {
+        setTimeout(resolve, t * 1000)
+      })
+      return this
+    },
+    eat(v) {
+      this.tmp = this.tmp.then(() => { console.log(`Eat ${v}`) })
+      return this
+    }
+  }
+
+
+
+  function LazyPig(name) {
+    console.log(`Hello, I\'m ${name}！`)
+    var arr = new Array();
+    var isRec = false;
+    var isSteep = false;
+    this.sleep = function (n) {
+      isSteep = true
+      arr.push({
+        fun: "sleep",
+        val: n
+      });
+      if (!isRec) {
+        recursive();
+      }
+      return this;
+    }
+    this.eat = function (input) {
+      if (isSteep) {
+        arr.push({
+          fun: "eat",
+          val: input
+        });
+      } else {
+        _eat(input);
+      }
+      return this;
+    }
+    function _eat(input) {
+      console.log(`Eat ${input}`);
+    }
+    function recursive() {
+      isRec = true;
+      if (!!arr) {
+        var obj = arr.shift();
+        if (!obj) return;
+        if (obj.fun === "sleep") {
+          console.log(`Wake up after  ${obj.val}`);
+          setTimeout(function () {
+            recursive();
+          }, obj.val * 1000)
+        } else {
+          _eat(obj.val);
+          recursive();
+        }
+      }
+    }
+    return this;
+  }
+  LazyPig('Peggy').sleep(5).eat('dinner').sleep(1).eat('supper');
+
+
+
+  function LazyPig(name) {
+    return new Lazy(name)
+  }
+  function Lazy(name) {
+    this.name = name;
+    this.task = [];
+    console.log('Hi, 我是' + name)
+    let _this = this;
+    let fn = (function () {
+      return function () {
+        _this.next()
+      }
+    })()
+    this.task.push(fn)
+    setTimeout(() => {
+      _this.next()
+    }, 0)
+  }
+  Lazy.prototype = {
+    next: function () {
+      var fn = this.task.shift()
+      fn && fn()
+    },
+    sleep: function (time) {
+      let _this = this;
+      let fn = (function (time) {
+        return function () {
+          setTimeout(() => {
+            console.log(_this.name + ' Wake up !')
+            _this.next()
+          }, time * 1000)
+        }
+      })(time)
+      this.task.push(fn)
+      return this;
+    },
+    eat: function (smt) {
+      let _this = this;
+      let fn = (function (smt) {
+        return function () {
+          console.log(_this.name + ' is eating ' + smt);
+          _this.next()
+        }
+      })(smt)
+      this.task.push(fn)
+      return this;
+    }
+  }
+  LazyPig('哼哼').sleep(5).eat('早饭')
+
+
+
+
 </script>
 
 </html>
