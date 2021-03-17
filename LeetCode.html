@@ -482,6 +482,28 @@
 // 	return m*n === result.length;
 // }
 
+
+function f() {} 
+f1=last(f)
+function last(f) {
+  var queue = []
+  return function() {
+    let tmp = f()
+    queue.push(tmp)
+    return new Promise((resolve) => {
+      if (queue.indexOf(tmp) === queue.length-1) {
+        resolve()
+      }
+    })
+  }
+}
+
+f1().then(console.log)
+f1().then(console.log)
+f1().then(console.log)
+f1().then(console.log)
+
+
   </script>
 </body>
 
