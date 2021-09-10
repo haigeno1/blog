@@ -1,215 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-
-<body>
-</body>
-<script>
-  // 1.1 使用setTimeout实现一个mySetInterval;
-  // https://juejin.cn/post/6844903839934447629
-  function mySetInterval(callback, t) {
-    callback()
-    setTimeout(() => mySetInterval(callback, t), t)
-  }
-
-  var id
-  function mySetInterval(callback, t) {
-    // callback()
-    // setTimeout(()=>mySetInterval(callback, t), t)
-
-    // function f() {
-    //   callback()
-    //   setTimeout(f,t)
-    // }
-    // setTimeout(f, t)
-
-    function f() {
+  <body></body>
+  <script>
+    // 1.1 使用setTimeout实现一个mySetInterval;
+    // https://juejin.cn/post/6844903839934447629
+    function mySetInterval(callback, t) {
       callback()
+      setTimeout(() => mySetInterval(callback, t), t)
+    }
+
+    var id
+    function mySetInterval(callback, t) {
+      // callback()
+      // setTimeout(()=>mySetInterval(callback, t), t)
+
+      // function f() {
+      //   callback()
+      //   setTimeout(f,t)
+      // }
+      // setTimeout(f, t)
+
+      function f() {
+        callback()
+        id = setTimeout(f, t)
+      }
       id = setTimeout(f, t)
+      return id
     }
-    id = setTimeout(f, t)
-    return id
-  }
 
+    var id = 1
+    var obj = {}
+    function mySetInterval(callback, t) {
+      // callback()
+      // setTimeout(()=>mySetInterval(callback, t), t)
 
-  var id = 1
-  var obj = {}
-  function mySetInterval(callback, t) {
-    // callback()
-    // setTimeout(()=>mySetInterval(callback, t), t)
+      // function f() {
+      //   callback()
+      //   setTimeout(f,t)
+      // }
+      // setTimeout(f, t)
 
-    // function f() {
-    //   callback()
-    //   setTimeout(f,t)
-    // }
-    // setTimeout(f, t)
-
-    // var id
-    id++
-    function f() {
-      callback()
+      // var id
+      id++
+      function f() {
+        callback()
+        obj[id] = setTimeout(f, t)
+      }
       obj[id] = setTimeout(f, t)
+      return id
     }
-    obj[id] = setTimeout(f, t)
-    return id
-  }
 
-  // 使下面的调用每1000毫秒打印字符串'x'
-  mySetInterval(() => {
-    console.log('x')
-  }, 1000);
+    // 使下面的调用每1000毫秒打印字符串'x'
+    mySetInterval(() => {
+      console.log("x")
+    }, 1000)
 
-  // 1.2 实现一个myClearInterval,可以终止一个mySetInterval的执行;
-  // 提示：使用clearTimeout
-  function myClearInterval(timer) {
-    clearTimeout(obj[timer])
-  }
-
-  // usage:
-  const timer = mySetInterval(() => {
-    console.log('x')
-  }, 1000);
-
-  myClearInterval(timer);
-
-  // 3
-  // 业务需求中，经常有 只需要最后一次请求的结果（比如搜索）编写一个高阶函数，传递旧请求方法（执行后返回 promise），返回一个新方法。
-  // 连续触发时，若上一次 promise 执行未结束则直接废弃，只有最后一次 promise 会触发then/reject。
-
-  /**
-  * 只有最后一次promise会then与reject
-  * @param {function} promiseFunction
-  * promiseFunction 示例： () => fetch('data')
-  */
-
-  function lastPromise(promiseFunction) {
-    var queue = []
-    return function f() {
-      const fun = promiseFunction()
-      queue.push(fun)
-      return new Promise((resolve) => {
-        // 下面似乎有问题？？总是为true
-        if (queue.indexOf(fun) === queue.length - 1) {
-          resolve(fun)
-        }
-      })
+    // 1.2 实现一个myClearInterval,可以终止一个mySetInterval的执行;
+    // 提示：使用clearTimeout
+    function myClearInterval(timer) {
+      clearTimeout(obj[timer])
     }
-  }
 
-  // 示例
-  let count = 1;
-  let promiseFunction = () =>
-    new Promise(rs =>
-      window.setTimeout(() => {
-        rs(count++);
-      })
-    );
+    // usage:
+    const timer = mySetInterval(() => {
+      console.log("x")
+    }, 1000)
 
-  let lastFn = lastPromise(promiseFunction);
+    myClearInterval(timer)
 
-  lastFn().then(console.log); // 无输出
-  lastFn().then(console.log); // 无输出
-  lastFn().then(console.log); // 3
+    // 3
+    // 业务需求中，经常有 只需要最后一次请求的结果（比如搜索）编写一个高阶函数，传递旧请求方法（执行后返回 promise），返回一个新方法。
+    // 连续触发时，若上一次 promise 执行未结束则直接废弃，只有最后一次 promise 会触发then/reject。
 
+    /**
+     * 只有最后一次promise会then与reject
+     * @param {function} promiseFunction
+     * promiseFunction 示例： () => fetch('data')
+     */
 
-
-
-
-
-
-  // batch 一个函数，让它在并发调用时只被执行一次
-  // https://www.qiyuandi.com/zhanzhang/zonghe/13965.html
-
-  let executeCount = 0;
-  const targetFn = async nums => {
-    executeCount++;
-    return nums.map(num => 2 * num + 1);
-  };
-
-  // const batcher = (fn) => {
-  //   // todo batch logic
-  //   let queue = []
-  //   let len = []
-  //   // let obj = {}
-  //   return function f(arr) {
-  //     queue.push(arr)
-  //     len.push(arr.length)
-  //     // queue = queue.concat(...arr)
-  //     return new Promise((resolve) => {
-  //       if (queue.indexOf(arr) === queue.length - 1) {
-  //         let res = fn([].concat(...queue))
-  //         for (let i = 0; i < len.length; i++) {
-  //           // res.slice(len[i]
-  //         }
-  //         resolve(res)
-  //       }
-  //     })
-  //   }
-  // }
-
-  const batcher = f => {
-    let nums = [];
-    const p = Promise.resolve().then(_ => f(nums));
-
-    return arr => {
-      let start = nums.length;
-      nums = nums.concat(arr);
-      let end = nums.length;
-      return p.then(ret => ret.slice(start, end));
-    };
-  };
-
-  const batchedFn = batcher(targetFn);
-
-  const main = async () => {
-    const [result1, result2, result3] = await Promise.all([
-      batchedFn([1, 2, 3]),
-      batchedFn([4, 5]),
-      batchedFn([6, 7]),
-    ]);
-
-    console.log(result1, result2, result3) // 
-    console.log(executeCount)  // 预期为 1
-  }
-
-  main()
-
-
-
-
-
-
-  const fn = (...args) => {
-    for (const arg of args) {
-      console.log(arg);
+    function lastPromise(promiseFunction) {
+      var queue = []
+      return function f() {
+        const fun = promiseFunction()
+        queue.push(fun)
+        return new Promise((resolve) => {
+          // 下面似乎有问题？？总是为true
+          if (queue.indexOf(fun) === queue.length - 1) {
+            resolve(fun)
+          }
+        })
+      }
     }
-    let res = ""
-    let res0 = args[0]
-    for (let i = 1; i < args.length; i++) {
-      res += res0[i - 1] + args[i]
+
+    // 示例
+    let count = 1
+    let promiseFunction = () =>
+      new Promise((rs) =>
+        window.setTimeout(() => {
+          rs(count++)
+        })
+      )
+
+    let lastFn = lastPromise(promiseFunction)
+
+    lastFn().then(console.log) // 无输出
+    lastFn().then(console.log) // 无输出
+    lastFn().then(console.log) // 3
+
+    // batch 一个函数，让它在并发调用时只被执行一次
+    // https://www.qiyuandi.com/zhanzhang/zonghe/13965.html
+
+    let executeCount = 0
+    const targetFn = async (nums) => {
+      executeCount++
+      return nums.map((num) => 2 * num + 1)
     }
-    return res += res0[res0.length - 1]
-  };
-  const [a, b] = [1, 2];
-  fn`111${a} + ${b} = ${a + b}222`;
 
-  fn('1+2=3')
-  '1+2=3'
+    // const batcher = (fn) => {
+    //   // todo batch logic
+    //   let queue = []
+    //   let len = []
+    //   // let obj = {}
+    //   return function f(arr) {
+    //     queue.push(arr)
+    //     len.push(arr.length)
+    //     // queue = queue.concat(...arr)
+    //     return new Promise((resolve) => {
+    //       if (queue.indexOf(arr) === queue.length - 1) {
+    //         let res = fn([].concat(...queue))
+    //         for (let i = 0; i < len.length; i++) {
+    //           // res.slice(len[i]
+    //         }
+    //         resolve(res)
+    //       }
+    //     })
+    //   }
+    // }
 
+    const batcher = (f) => {
+      let nums = []
+      const p = Promise.resolve().then((_) => f(nums))
 
+      return (arr) => {
+        let start = nums.length
+        nums = nums.concat(arr)
+        let end = nums.length
+        return p.then((ret) => ret.slice(start, end))
+      }
+    }
 
+    const batchedFn = batcher(targetFn)
 
+    const main = async () => {
+      const [result1, result2, result3] = await Promise.all([
+        batchedFn([1, 2, 3]),
+        batchedFn([4, 5]),
+        batchedFn([6, 7]),
+      ])
 
+      console.log(result1, result2, result3) //
+      console.log(executeCount) // 预期为 1
+    }
 
+    main()
 
-  // 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
-  /* LazyPig("Peggy")输出:
+    const fn = (...args) => {
+      for (const arg of args) {
+        console.log(arg)
+      }
+      let res = ""
+      let res0 = args[0]
+      for (let i = 1; i < args.length; i++) {
+        res += res0[i - 1] + args[i]
+      }
+      return (res += res0[res0.length - 1])
+    }
+    const [a, b] = [1, 2]
+    fn`111${a} + ${b} = ${a + b}222`
+
+    fn("1+2=3")
+    ;("1+2=3")
+
+    // 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
+    /* LazyPig("Peggy")输出:
   Hello，I'm Peggy！
   
   LazyPig("Peggy").sleep(10).eat("dinner")输出
@@ -226,133 +206,186 @@
   以此类推。
   */
 
-  function LazyPig(v) {
-    return new F(v)
-  }
-  function F(v) {
-    console.log(`Hello，I'm ${v}！`)
-    this.tmp = Promise.resolve()
-  }
-  F.prototype = {
-    sleep(t) {
-      this.tmp = new Promise((resolve) => {
-        setTimeout(resolve, t * 1000)
-      })
-      return this
-    },
-    eat(v) {
-      this.tmp = this.tmp.then(() => { console.log(`Eat ${v}`) })
-      return this
+    function LazyPig(v) {
+      return new F(v)
     }
-  }
-
-
-
-  function LazyPig(name) {
-    console.log(`Hello, I\'m ${name}！`)
-    var arr = new Array();
-    var isRec = false;
-    var isSteep = false;
-    this.sleep = function (n) {
-      isSteep = true
-      arr.push({
-        fun: "sleep",
-        val: n
-      });
-      if (!isRec) {
-        recursive();
-      }
-      return this;
+    function F(v) {
+      console.log(`Hello，I'm ${v}！`)
+      this.tmp = Promise.resolve()
     }
-    this.eat = function (input) {
-      if (isSteep) {
+    F.prototype = {
+      sleep(t) {
+        this.tmp = new Promise((resolve) => {
+          setTimeout(resolve, t * 1000)
+        })
+        return this
+      },
+      eat(v) {
+        this.tmp = this.tmp.then(() => {
+          console.log(`Eat ${v}`)
+        })
+        return this
+      },
+    }
+
+    function LazyPig(name) {
+      console.log(`Hello, I\'m ${name}！`)
+      var arr = new Array()
+      var isRec = false
+      var isSteep = false
+      this.sleep = function (n) {
+        isSteep = true
         arr.push({
-          fun: "eat",
-          val: input
-        });
-      } else {
-        _eat(input);
+          fun: "sleep",
+          val: n,
+        })
+        if (!isRec) {
+          recursive()
+        }
+        return this
       }
-      return this;
-    }
-    function _eat(input) {
-      console.log(`Eat ${input}`);
-    }
-    function recursive() {
-      isRec = true;
-      if (!!arr) {
-        var obj = arr.shift();
-        if (!obj) return;
-        if (obj.fun === "sleep") {
-          console.log(`Wake up after  ${obj.val}`);
-          setTimeout(function () {
-            recursive();
-          }, obj.val * 1000)
+      this.eat = function (input) {
+        if (isSteep) {
+          arr.push({
+            fun: "eat",
+            val: input,
+          })
         } else {
-          _eat(obj.val);
-          recursive();
+          _eat(input)
+        }
+        return this
+      }
+      function _eat(input) {
+        console.log(`Eat ${input}`)
+      }
+      function recursive() {
+        isRec = true
+        if (!!arr) {
+          var obj = arr.shift()
+          if (!obj) return
+          if (obj.fun === "sleep") {
+            console.log(`Wake up after  ${obj.val}`)
+            setTimeout(function () {
+              recursive()
+            }, obj.val * 1000)
+          } else {
+            _eat(obj.val)
+            recursive()
+          }
         }
       }
+      return this
     }
-    return this;
-  }
-  LazyPig('Peggy').sleep(5).eat('dinner').sleep(1).eat('supper');
+    LazyPig("Peggy").sleep(5).eat("dinner").sleep(1).eat("supper")
 
-
-
-  function LazyPig(name) {
-    return new Lazy(name)
-  }
-  function Lazy(name) {
-    this.name = name;
-    this.task = [];
-    console.log('Hi, 我是' + name)
-    let _this = this;
-    let fn = (function () {
-      return function () {
-        _this.next()
-      }
-    })()
-    this.task.push(fn)
-    setTimeout(() => {
-      _this.next()
-    }, 0)
-  }
-  Lazy.prototype = {
-    next: function () {
-      var fn = this.task.shift()
-      fn && fn()
-    },
-    sleep: function (time) {
-      let _this = this;
-      let fn = (function (time) {
+    function LazyPig(name) {
+      return new Lazy(name)
+    }
+    function Lazy(name) {
+      this.name = name
+      this.task = []
+      console.log("Hi, 我是" + name)
+      let _this = this
+      let fn = (function () {
         return function () {
-          setTimeout(() => {
-            console.log(_this.name + ' Wake up !')
-            _this.next()
-          }, time * 1000)
-        }
-      })(time)
-      this.task.push(fn)
-      return this;
-    },
-    eat: function (smt) {
-      let _this = this;
-      let fn = (function (smt) {
-        return function () {
-          console.log(_this.name + ' is eating ' + smt);
           _this.next()
         }
-      })(smt)
+      })()
       this.task.push(fn)
-      return this;
+      setTimeout(() => {
+        _this.next()
+      }, 0)
     }
-  }
-  LazyPig('哼哼').sleep(5).eat('早饭')
+    Lazy.prototype = {
+      next: function () {
+        var fn = this.task.shift()
+        fn && fn()
+      },
+      sleep: function (time) {
+        let _this = this
+        let fn = (function (time) {
+          return function () {
+            setTimeout(() => {
+              console.log(_this.name + " Wake up !")
+              _this.next()
+            }, time * 1000)
+          }
+        })(time)
+        this.task.push(fn)
+        return this
+      },
+      eat: function (smt) {
+        let _this = this
+        let fn = (function (smt) {
+          return function () {
+            console.log(_this.name + " is eating " + smt)
+            _this.next()
+          }
+        })(smt)
+        this.task.push(fn)
+        return this
+      },
+    }
+    LazyPig("哼哼").sleep(5).eat("早饭")
 
+    // 最多同时并发3个请求
+    function mockFetch(url) {
+      // console.log("f~~ ~ file: 123.js ~ line 2 ~ mockFetch ~ url", url)
+      return new Promise((resolve) => {
+        const time = Math.floor(Math.random() * 3) + 1
+        console.log("before settimeout", url, Date.now())
+        setTimeout(() => {
+          console.log("complete settimeout", url, Date.now())
+          resolve(`url - ${url}`)
+        }, time * 1000)
+      })
+    }
 
+    var resultArr = []
+    var resolvedNum = 0
+    var maxIndex = 0
+    var resF
+    function tmp(url, index, num, urlList) {
+      // if (index >= urlList.length) return
+      if (maxIndex === urlList.length) {
+        resF(resultArr)
+        return
+      }
+      // if (resultArr.length === urlList.length) {
+      //   resF(resultArr)
+      //   return
+      // }
+      if (maxIndex >= urlList.length) {
+        return
+      }
+      maxIndex = Math.max(index, maxIndex)
+      console.log(
+        "f~~ ~ file: 123.js ~ line 25 ~ tmp ~ url, index, num:",
+        url,
+        index,
+        num,
+        maxIndex,
+        resultArr
+      )
+      mockFetch(url).then((res) => {
+        resolvedNum++
+        resultArr[index] = res
+        // if (resolvedNum === urlList.length) return
+        if (index >= urlList.length) return
+        tmp(urlList[maxIndex + 1], maxIndex + 1, num, urlList)
+      })
+    }
+    function sendRequest(urlList, num, f) {
+      resF = f
+      for (let i = 0; i < num; i++) {
+        tmp(urlList[i], i, num, urlList)
+      }
+    }
 
+    var urlList = ["a", "b", "c", "d", "e"]
 
-</script>
-
+    sendRequest(urlList, 3, (res) => {
+      console.log("xxxxx", maxIndex, res) // url-a url-b url-c url-d url-e
+    })
+  </script>
 </html>
