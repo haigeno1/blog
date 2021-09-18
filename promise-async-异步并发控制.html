@@ -330,7 +330,6 @@
 
     // 最多同时并发3个请求
     function mockFetch(url) {
-      // console.log("f~~ ~ file: 123.js ~ line 2 ~ mockFetch ~ url", url)
       return new Promise((resolve) => {
         const time = Math.floor(Math.random() * 3) + 1
         console.log("before settimeout", url, Date.now())
@@ -360,7 +359,7 @@
       }
       maxIndex = Math.max(index, maxIndex)
       console.log(
-        "f~~ ~ file: 123.js ~ line 25 ~ tmp ~ url, index, num:",
+        "~ file: 123.js ~ line 25 ~ tmp ~ url, index, num:",
         url,
         index,
         num,
