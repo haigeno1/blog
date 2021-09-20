@@ -7,3 +7,8 @@ Gitlens filehistory一条线上最早一个提交是^，往早看的情况即使
 gielens的githistory 有3种。第一种是timiline，是最稳的一种，完全按照时间顺序包含merge的提交。第二种是右上角的，不会包含^，可能会跳，向早看与向晚看顺序也不太一样。有merge的情况abc，向早看c->a->b->跳跃，向晚看即返回的时候没有跳直接到b再到a。第三种是file history 点击哪个则对比框右侧的一般就是哪个提交，点击merge的提交的时候右侧也不一定是当前提交可能是个bug，提交还是以hover上去展示的为准，有展示merge提交，对比框左侧也会有^，不含merge的情况下也会与第二种有不一样的文件在diff。
 gitrebase有自动识别commit的能力，把合并了各种分支的分支a rebase到master上，合并的各种提交就不见了只剩下每次真正的提交了。rebase还有自动识别本质上是不是同一个commit的能力，例如分支b合并了两个分支，分支c又做了同样的操作，虽然提交的hash不同但是本质上是一样的，分支b可以直接rebase到分支c上，c也可以直接rebase到分支b上。但是合并后master并解决过冲突的分支 rebase 到master的时候，git不能自动识别出处理过的冲突，还得手动处理解决冲突。
 
+.gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。解决方法就是先把本地缓存删除（改变成未track状态），然后再提交:
+git rm -r --cached .
+
+查看两个星期内的改动
+git whatchanged --since='2 weeks ago'
