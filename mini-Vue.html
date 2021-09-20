@@ -77,6 +77,7 @@
 
       // observer.js
       function Observer(data) {
+          console.log("f~~ ~ file: mini-Vue.html ~ line 80 ~ Observer ~ data", data)
           this.data = data;
           this.walk(data);
       }
@@ -131,6 +132,7 @@
 
       function Dep() {
           this.id = uid++;
+          console.log("f~~ ~ file: mini-Vue.html ~ line 135 ~ Dep ~ this.id", this.id)
           this.subs = [];
       }
 
@@ -162,6 +164,7 @@
 
       // compile.js
       function Compile(el, vm) {
+          console.log("f~~ ~ file: mini-Vue.html ~ line 167 ~ Compile ~ el, vm", el, vm)
           this.$vm = vm;
           this.$el = this.isElementNode(el) ? el : document.querySelector(el);
 
@@ -351,6 +354,7 @@
             
       // watcher.js
       function Watcher(vm, expOrFn, cb) {
+          console.log("f~~ ~ file: mini-Vue.html ~ line 357 ~ Watcher ~ vm, expOrFn, cb", vm, expOrFn, cb)
           this.cb = cb;
           this.vm = vm;
           this.expOrFn = expOrFn;
