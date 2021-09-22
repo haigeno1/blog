@@ -257,25 +257,6 @@
     }
     back(arr, [], 0)
 
-    // https://blog.csdn.net/qq_34629352/article/details/105955188
-    // 利用 Promise 封装一个异步加载图片的方法，并限制并发个数，即同时请求的个数不超过3个。
-    // loadImage ，loadControl
-    // arr = [img2, img3 ... img100]
-    // // Image.onload
-    let count = 0
-    let index = 0
-    function loadControl(arr) {
-      if (index >= arr.length) return
-      if (count < 3) {
-        count++
-        loadImage(arr[index])
-          .then(() => {
-            count--
-          })
-          .then(loadControl(arr, ++index))
-      }
-    }
-    loadControl(arr)
 
     // 螺旋打印二维数组
     // 54: https://leetcode.com/problems/spiral-matrix/
