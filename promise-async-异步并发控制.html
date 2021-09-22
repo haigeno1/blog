@@ -318,10 +318,6 @@
       }
     }
 
-
-
-    
-
     // 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
     /* LazyPig("Peggy")输出:
   Hello，I'm Peggy！
@@ -340,6 +336,7 @@
   以此类推。
   */
 
+    // 利用promise
     function LazyPig(v) {
       return new F(v)
     }
@@ -349,9 +346,9 @@
     }
     F.prototype = {
       sleep(t) {
-        this.tmp = new Promise((resolve) => {
+        this.tmp = this.tmp.then(() => new Promise((resolve) => {
           setTimeout(resolve, t * 1000)
-        })
+        }))
         return this
       },
       eat(v) {
@@ -361,6 +358,81 @@
         return this
       },
     }
+    LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
+
+
+
+    // 手动构建任务数组
+    function LazyPig(name) {
+      return new Lazy(name)
+    }
+    function Lazy(name) {
+      this.name = name
+      this.task = []
+      console.log("Hi, 我是" + name)
+      let _this = this
+      let fn = (function () {
+        return function () {
+          _this.next()
+        }
+      })()
+      this.task.push(fn)
+      setTimeout(() => {
+        _this.next()
+      }, 0)
+    }
+    Lazy.prototype = {
+      next: function () {
+        var fn = this.task.shift()
+        fn && fn()
+      },
+      sleep: function (time) {
+        let _this = this
+        let fn = (function (time) {
+          return function () {
+            setTimeout(() => {
+              console.log(_this.name + " Wake up !")
+              _this.next()
+            }, time * 1000)
+          }
+        })(time)
+        this.task.push(fn)
+        return this
+      },
+      eat: function (smt) {
+        let _this = this
+        let fn = (function (smt) {
+          return function () {
+            console.log(_this.name + " is eating " + smt)
+            _this.next()
+          }
+        })(smt)
+        this.task.push(fn)
+        return this
+      },
+    }
+    LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
+
+
+    // 用while同步阻塞
+    function LazyPig(name){
+        console.log(`Hello,I'm ${name}`)
+        var fn = {}
+        fn.sleep = function(time){
+            console.log(`Wake up ${time}s`)
+            let start = Date.now()
+            while(Date.now()-start<=time*1000){}
+            console.log(`Wake up down`)
+            return fn;
+        }
+        fn.eat = function(food){
+            console.log(`Eat ${food}`)
+            return fn;
+        }
+        return fn;
+    }
+    LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
+
 
     function LazyPig(name) {
       console.log(`Hello, I\'m ${name}！`)
@@ -410,57 +482,14 @@
       }
       return this
     }
-    LazyPig("Peggy").sleep(5).eat("dinner").sleep(1).eat("supper")
+    LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
 
-    function LazyPig(name) {
-      return new Lazy(name)
-    }
-    function Lazy(name) {
-      this.name = name
-      this.task = []
-      console.log("Hi, 我是" + name)
-      let _this = this
-      let fn = (function () {
-        return function () {
-          _this.next()
-        }
-      })()
-      this.task.push(fn)
-      setTimeout(() => {
-        _this.next()
-      }, 0)
-    }
-    Lazy.prototype = {
-      next: function () {
-        var fn = this.task.shift()
-        fn && fn()
-      },
-      sleep: function (time) {
-        let _this = this
-        let fn = (function (time) {
-          return function () {
-            setTimeout(() => {
-              console.log(_this.name + " Wake up !")
-              _this.next()
-            }, time * 1000)
-          }
-        })(time)
-        this.task.push(fn)
-        return this
-      },
-      eat: function (smt) {
-        let _this = this
-        let fn = (function (smt) {
-          return function () {
-            console.log(_this.name + " is eating " + smt)
-            _this.next()
-          }
-        })(smt)
-        this.task.push(fn)
-        return this
-      },
-    }
-    LazyPig("哼哼").sleep(5).eat("早饭")
+
+
+
+
+
+
 
     // 最多同时并发3个请求
     function mockFetch(url) {
