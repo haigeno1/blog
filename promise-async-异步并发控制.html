@@ -188,7 +188,6 @@
     fn("1+2=3")
     ;("1+2=3")
 
-
     // https://github.com/slorber/awesome-only-resolves-last-promise
     function createImperativePromise(promiseArg) {
       var resolve = null
@@ -250,7 +249,6 @@
     lastFn().then(console.log) // 无输出
     lastFn().then(console.log) // 3
 
-
     // const delayPromise = (timeout: number) =>
     // new Promise(resolve => {
     //   setTimeout(resolve, timeout);
@@ -265,56 +263,64 @@
     // const promise2 = wrappedAsyncFunction(2, '2');
     // const promise3 = wrappedAsyncFunction(3, '3');
 
+    // 定义了一个同步函数对传入的数组进行遍历乘二操作，同时每执行一次就会给 executeCount 累加。最终我们需要实现一个 batcher 函数，使用其对该同步函数包装后，实现每次调用依旧返回预期的二倍结果，同时还需要保证 executeCount 执行次数为1。
+    let executeCount = 0
+    const fn = (nums) => {
+      executeCount++
+      return nums.map((x) => x * 2)
+    }
+
+    const batcher = (f) => {
+      // todo 实现 batcher 函数
+    }
+
+    const batchedFn = batcher(fn)
+
+    const main = async () => {
+      const [r1, r2, r3] = await Promise.all([
+        batchedFn([1, 2, 3]),
+        batchedFn([4, 5]),
+        batchedFn([7, 8, 9]),
+      ])
+
+      //满足以下 test case
+      assert(r1).tobe([2, 4, 6])
+      assert(r2).tobe([8, 10])
+      assert(r3).tobe([14, 16, 18])
+      assert(executeCount).tobe(1)
+    }
+
+    // setTimeout 解法
+    const batcher = (f) => {
+      let nums = []
+      const p = new Promise((resolve) =>
+        setTimeout((_) => resolve(f(nums)), 100)
+      )
+
+      return (arr) => {
+        let start = nums.length
+        nums = nums.concat(arr)
+        let end = nums.length
+        return p.then((ret) => ret.slice(start, end))
+      }
+    }
+
+    // Promise 解法
+    const batcher = (f) => {
+      let nums = []
+      const p = Promise.resolve().then((_) => f(nums))
+
+      return (arr) => {
+        let start = nums.length
+        nums = nums.concat(arr)
+        let end = nums.length
+        return p.then((ret) => ret.slice(start, end))
+      }
+    }
 
 
-    // https://github.com/6fedcom/fe-blog/blob/master/handwrittenCode/lastPromise.js
-    //lastPromise实现
-    //业务需求中，经常有 只需要最后一次请求的结果（比如搜索）编写一个高阶函数，传递旧请求方法（执行后返回 promise），返回一个新方法。
-    //连续触发时，若上一次 promise 执行未结束则直接废弃，只有最后一次 promise 会触发then/reject。
 
-    // 示例
-    // let count = 1
-    // let promiseFunction = () =>
-    //   new Promise((rs) =>
-    //     window.setTimeout(() => {
-    //       rs(count++)
-    //     })
-    //   )
-
-    // 1. 传递旧请求方法（执行后返回 promise），返回一个新方法
-    // 2. 连续触发时，若上一次 promise 执行未结束则直接废弃，只有最后一次 promise 会触发then/reject
-    /**
-     * 只有最后一次promise会then与reject
-     * @param {function} promiseFunction
-     * promiseFunction 示例： () => fetch('data')
-     */
-        // wrongwrongwrong
-    // const lastPromise = (promise) => {
-    //   let hasCanceled_ = false
-    //   const wrappedPromise = () => new Promise((resolve, reject) => {
-    //     promise()
-    //       .then((val) =>
-    //         hasCanceled_ ? reject({ isCanceled: true }) : resolve(val)
-    //       )
-    //       .catch((error) =>
-    //         hasCanceled_ ? reject({ isCanceled: true }) : reject(error)
-    //       )
-    //   })
-    //   return {
-    //     promise: wrappedPromise,
-    //     cancel() {
-    //       hasCanceled_ = true
-    //     },
-    //   }
-    // }
-
-    // let lastFn = lastPromise(promiseFunction).promise
-
-    // lastFn().then(console.log) // 无输出
-    // lastFn().then(console.log) // 无输出
-    // lastFn().then(console.log) // 3
-
-
+    
 
     // 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
     /* LazyPig("Peggy")输出:
