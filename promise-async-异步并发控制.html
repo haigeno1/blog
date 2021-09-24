@@ -1,728 +1,772 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
 
-  <body></body>
-  <script>
-    // 1.1 使用setTimeout实现一个mySetInterval;
-    // https://juejin.cn/post/6844903839934447629
-    function mySetInterval(callback, t) {
-      callback()
-      setTimeout(() => mySetInterval(callback, t), t)
-    }
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
 
-    var id
-    function mySetInterval(callback, t) {
-      // callback()
-      // setTimeout(()=>mySetInterval(callback, t), t)
+<body></body>
+<script>
+  // 1.1 使用setTimeout实现一个mySetInterval;
+  // https://juejin.cn/post/6844903839934447629
+  function mySetInterval(callback, t) {
+    callback()
+    setTimeout(() => mySetInterval(callback, t), t)
+  }
 
-      // function f() {
-      //   callback()
-      //   setTimeout(f,t)
-      // }
-      // setTimeout(f, t)
+  var id
+  function mySetInterval(callback, t) {
+    // callback()
+    // setTimeout(()=>mySetInterval(callback, t), t)
 
-      function f() {
-        callback()
-        id = setTimeout(f, t)
-      }
-      id = setTimeout(f, t)
-      return id
-    }
-
-    var id = 1
-    var obj = {}
-    function mySetInterval(callback, t) {
-      // callback()
-      // setTimeout(()=>mySetInterval(callback, t), t)
-
-      // function f() {
-      //   callback()
-      //   setTimeout(f,t)
-      // }
-      // setTimeout(f, t)
-
-      // var id
-      id++
-      function f() {
-        callback()
-        obj[id] = setTimeout(f, t)
-      }
-      obj[id] = setTimeout(f, t)
-      return id
-    }
-
-    // 使下面的调用每1000毫秒打印字符串'x'
-    mySetInterval(() => {
-      console.log("x")
-    }, 1000)
-
-    // 1.2 实现一个myClearInterval,可以终止一个mySetInterval的执行;
-    // 提示：使用clearTimeout
-    function myClearInterval(timer) {
-      clearTimeout(obj[timer])
-    }
-
-    // usage:
-    const timer = mySetInterval(() => {
-      console.log("x")
-    }, 1000)
-
-    myClearInterval(timer)
-
-    // 3
-    // 业务需求中，经常有 只需要最后一次请求的结果（比如搜索）编写一个高阶函数，传递旧请求方法（执行后返回 promise），返回一个新方法。
-    // 连续触发时，若上一次 promise 执行未结束则直接废弃，只有最后一次 promise 会触发then/reject。
-
-    /**
-     * 只有最后一次promise会then与reject
-     * @param {function} promiseFunction
-     * promiseFunction 示例： () => fetch('data')
-     */
-
-    function lastPromise(promiseFunction) {
-      var queue = []
-      return function f() {
-        const fun = promiseFunction()
-        queue.push(fun)
-        return new Promise((resolve) => {
-          // 下面似乎有问题？？总是为true
-          if (queue.indexOf(fun) === queue.length - 1) {
-            resolve(fun)
-          }
-        })
-      }
-    }
-
-    // 示例
-    let count = 1
-    let promiseFunction = () =>
-      new Promise((rs) =>
-        window.setTimeout(() => {
-          rs(count++)
-        })
-      )
-
-    let lastFn = lastPromise(promiseFunction)
-
-    lastFn().then(console.log) // 无输出
-    lastFn().then(console.log) // 无输出
-    lastFn().then(console.log) // 3
-
-    // batch 一个函数，让它在并发调用时只被执行一次
-    // https://www.qiyuandi.com/zhanzhang/zonghe/13965.html
-
-    let executeCount = 0
-    const targetFn = async (nums) => {
-      executeCount++
-      return nums.map((num) => 2 * num + 1)
-    }
-
-    // const batcher = (fn) => {
-    //   // todo batch logic
-    //   let queue = []
-    //   let len = []
-    //   // let obj = {}
-    //   return function f(arr) {
-    //     queue.push(arr)
-    //     len.push(arr.length)
-    //     // queue = queue.concat(...arr)
-    //     return new Promise((resolve) => {
-    //       if (queue.indexOf(arr) === queue.length - 1) {
-    //         let res = fn([].concat(...queue))
-    //         for (let i = 0; i < len.length; i++) {
-    //           // res.slice(len[i]
-    //         }
-    //         resolve(res)
-    //       }
-    //     })
-    //   }
+    // function f() {
+    //   callback()
+    //   setTimeout(f,t)
     // }
+    // setTimeout(f, t)
 
-    const batcher = (f) => {
-      let nums = []
-      const p = Promise.resolve().then((_) => f(nums))
-
-      return (arr) => {
-        let start = nums.length
-        nums = nums.concat(arr)
-        let end = nums.length
-        return p.then((ret) => ret.slice(start, end))
-      }
+    function f() {
+      callback()
+      id = setTimeout(f, t)
     }
+    id = setTimeout(f, t)
+    return id
+  }
 
-    const batchedFn = batcher(targetFn)
+  var id = 1
+  var obj = {}
+  function mySetInterval(callback, t) {
+    // callback()
+    // setTimeout(()=>mySetInterval(callback, t), t)
 
-    const main = async () => {
-      const [result1, result2, result3] = await Promise.all([
-        batchedFn([1, 2, 3]),
-        batchedFn([4, 5]),
-        batchedFn([6, 7]),
-      ])
+    // function f() {
+    //   callback()
+    //   setTimeout(f,t)
+    // }
+    // setTimeout(f, t)
 
-      console.log(result1, result2, result3) //
-      console.log(executeCount) // 预期为 1
+    // var id
+    id++
+    function f() {
+      callback()
+      obj[id] = setTimeout(f, t)
     }
+    obj[id] = setTimeout(f, t)
+    return id
+  }
 
-    main()
+  // 使下面的调用每1000毫秒打印字符串'x'
+  mySetInterval(() => {
+    console.log("x")
+  }, 1000)
 
-    const fn = (...args) => {
-      for (const arg of args) {
-        console.log(arg)
-      }
-      let res = ""
-      let res0 = args[0]
-      for (let i = 1; i < args.length; i++) {
-        res += res0[i - 1] + args[i]
-      }
-      return (res += res0[res0.length - 1])
-    }
-    const [a, b] = [1, 2]
-    fn`111${a} + ${b} = ${a + b}222`
+  // 1.2 实现一个myClearInterval,可以终止一个mySetInterval的执行;
+  // 提示：使用clearTimeout
+  function myClearInterval(timer) {
+    clearTimeout(obj[timer])
+  }
 
-    fn("1+2=3")
-    ;("1+2=3")
+  // usage:
+  const timer = mySetInterval(() => {
+    console.log("x")
+  }, 1000)
 
-    // https://github.com/slorber/awesome-only-resolves-last-promise
-    function createImperativePromise(promiseArg) {
-      var resolve = null
-      var reject = null
-      var wrappedPromise = new Promise(function (_resolve, _reject) {
-        resolve = _resolve
-        reject = _reject
-      })
-      promiseArg &&
-        promiseArg.then(
-          function (val) {
-            resolve && resolve(val)
-          },
-          function (error) {
-            reject && reject(error)
-          }
-        )
-      return {
-        promise: wrappedPromise,
-        resolve: function (value) {
-          resolve && resolve(value)
-        },
-        reject: function (reason) {
-          reject && reject(reason)
-        },
-        cancel: function () {
-          resolve = null
-          reject = null
-        },
-      }
-    }
+  myClearInterval(timer)
 
-    // see https://stackoverflow.com/a/54825370/82609
-    function onlyResolvesLast(asyncFunction) {
-      var cancelPrevious = null
-      return function () {
-        var args = []
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args[_i] = arguments[_i]
+
+
+
+
+
+
+
+
+  // 3
+  // 业务需求中，经常有 只需要最后一次请求的结果（比如搜索）编写一个高阶函数，传递旧请求方法（执行后返回 promise），返回一个新方法。
+  // 连续触发时，若上一次 promise 执行未结束则直接废弃，只有最后一次 promise 会触发then/reject。
+
+  /**
+   * 只有最后一次promise会then与reject
+   * @param {function} promiseFunction
+   * promiseFunction 示例： () => fetch('data')
+   */
+
+  function lastPromise(promiseFunction) {
+    var queue = []
+    return function f() {
+      const fun = promiseFunction()
+      queue.push(fun)
+      return new Promise((resolve) => {
+        // 下面似乎有问题？？总是为true
+        if (queue.indexOf(fun) === queue.length - 1) {
+          resolve(fun)
         }
-        cancelPrevious && cancelPrevious()
-        var initialPromise = asyncFunction.apply(void 0, args)
-        var _a = createImperativePromise(initialPromise),
-          promise = _a.promise,
-          cancel = _a.cancel
-        cancelPrevious = cancel
-        return promise
-      }
+      })
     }
-    let count = 1
-    let promiseFunction = () =>
-      new Promise((rs) =>
-        window.setTimeout(() => {
-          rs(count++)
-        })
+  }
+
+  // 示例
+  let count = 1
+  let promiseFunction = () =>
+    new Promise((rs) =>
+      window.setTimeout(() => {
+        rs(count++)
+      })
+    )
+
+  let lastFn = lastPromise(promiseFunction)
+
+  lastFn().then(console.log) // 无输出
+  lastFn().then(console.log) // 无输出
+  lastFn().then(console.log) // 3
+
+
+
+
+
+
+
+
+
+  
+  // batch 一个函数，让它在并发调用时只被执行一次
+  // https://www.qiyuandi.com/zhanzhang/zonghe/13965.html
+
+  let executeCount = 0
+  const targetFn = async (nums) => {
+    executeCount++
+    return nums.map((num) => 2 * num + 1)
+  }
+
+  // const batcher = (fn) => {
+  //   // todo batch logic
+  //   let queue = []
+  //   let len = []
+  //   // let obj = {}
+  //   return function f(arr) {
+  //     queue.push(arr)
+  //     len.push(arr.length)
+  //     // queue = queue.concat(...arr)
+  //     return new Promise((resolve) => {
+  //       if (queue.indexOf(arr) === queue.length - 1) {
+  //         let res = fn([].concat(...queue))
+  //         for (let i = 0; i < len.length; i++) {
+  //           // res.slice(len[i]
+  //         }
+  //         resolve(res)
+  //       }
+  //     })
+  //   }
+  // }
+
+  const batcher = (f) => {
+    let nums = []
+    const p = Promise.resolve().then((_) => f(nums))
+
+    return (arr) => {
+      let start = nums.length
+      nums = nums.concat(arr)
+      let end = nums.length
+      return p.then((ret) => ret.slice(start, end))
+    }
+  }
+
+  const batchedFn = batcher(targetFn)
+
+  const main = async () => {
+    const [result1, result2, result3] = await Promise.all([
+      batchedFn([1, 2, 3]),
+      batchedFn([4, 5]),
+      batchedFn([6, 7]),
+    ])
+
+    console.log(result1, result2, result3) //
+    console.log(executeCount) // 预期为 1
+  }
+
+  main()
+
+  const fn = (...args) => {
+    for (const arg of args) {
+      console.log(arg)
+    }
+    let res = ""
+    let res0 = args[0]
+    for (let i = 1; i < args.length; i++) {
+      res += res0[i - 1] + args[i]
+    }
+    return (res += res0[res0.length - 1])
+  }
+  const [a, b] = [1, 2]
+  fn`111${a} + ${b} = ${a + b}222`
+
+  fn("1+2=3")
+    ; ("1+2=3")
+
+
+
+
+
+
+  // https://github.com/slorber/awesome-only-resolves-last-promise
+  function createImperativePromise(promiseArg) {
+    var resolve = null
+    var reject = null
+    var wrappedPromise = new Promise(function (_resolve, _reject) {
+      resolve = _resolve
+      reject = _reject
+    })
+    promiseArg &&
+      promiseArg.then(
+        function (val) {
+          resolve && resolve(val)
+        },
+        function (error) {
+          reject && reject(error)
+        }
       )
-    let lastFn = onlyResolvesLast(promiseFunction)
-    lastFn().then(console.log) // 无输出
-    lastFn().then(console.log) // 无输出
-    lastFn().then(console.log) // 3
-
-    // const delayPromise = (timeout: number) =>
-    // new Promise(resolve => {
-    //   setTimeout(resolve, timeout);
-    // });
-    //   const asyncFunction = async (arg: number, arg2: string) => {
-    //   await delayPromise(delay);
-    //   return `val ${arg} ${arg2}`;
-    // };
-    // const wrappedAsyncFunction = onlyResolvesLast(asyncFunction);
-    // // When
-    // const promise1 = wrappedAsyncFunction(1, '1');
-    // const promise2 = wrappedAsyncFunction(2, '2');
-    // const promise3 = wrappedAsyncFunction(3, '3');
-
-    // 定义了一个同步函数对传入的数组进行遍历乘二操作，同时每执行一次就会给 executeCount 累加。最终我们需要实现一个 batcher 函数，使用其对该同步函数包装后，实现每次调用依旧返回预期的二倍结果，同时还需要保证 executeCount 执行次数为1。
-    let executeCount = 0
-    const fn = (nums) => {
-      executeCount++
-      return nums.map((x) => x * 2)
+    return {
+      promise: wrappedPromise,
+      resolve: function (value) {
+        resolve && resolve(value)
+      },
+      reject: function (reason) {
+        reject && reject(reason)
+      },
+      cancel: function () {
+        resolve = null
+        reject = null
+      },
     }
+  }
 
-    const batcher = (f) => {
-      // todo 实现 batcher 函数
+  // see https://stackoverflow.com/a/54825370/82609
+  function onlyResolvesLast(asyncFunction) {
+    var cancelPrevious = null
+    return function () {
+      var args = []
+      for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i]
+      }
+      cancelPrevious && cancelPrevious()
+      var initialPromise = asyncFunction.apply(void 0, args)
+      var _a = createImperativePromise(initialPromise),
+        promise = _a.promise,
+        cancel = _a.cancel
+      cancelPrevious = cancel
+      return promise
     }
+  }
+  let count = 1
+  let promiseFunction = () =>
+    new Promise((rs) =>
+      window.setTimeout(() => {
+        rs(count++)
+      })
+    )
+  let lastFn = onlyResolvesLast(promiseFunction)
+  lastFn().then(console.log) // 无输出
+  lastFn().then(console.log) // 无输出
+  lastFn().then(console.log) // 3
 
-    const batchedFn = batcher(fn)
+  // const delayPromise = (timeout: number) =>
+  // new Promise(resolve => {
+  //   setTimeout(resolve, timeout);
+  // });
+  //   const asyncFunction = async (arg: number, arg2: string) => {
+  //   await delayPromise(delay);
+  //   return `val ${arg} ${arg2}`;
+  // };
+  // const wrappedAsyncFunction = onlyResolvesLast(asyncFunction);
+  // // When
+  // const promise1 = wrappedAsyncFunction(1, '1');
+  // const promise2 = wrappedAsyncFunction(2, '2');
+  // const promise3 = wrappedAsyncFunction(3, '3');
 
-    const main = async () => {
-      const [r1, r2, r3] = await Promise.all([
-        batchedFn([1, 2, 3]),
-        batchedFn([4, 5]),
-        batchedFn([7, 8, 9]),
-      ])
 
-      //满足以下 test case
-      assert(r1).tobe([2, 4, 6])
-      assert(r2).tobe([8, 10])
-      assert(r3).tobe([14, 16, 18])
-      assert(executeCount).tobe(1)
+
+
+
+
+
+
+
+  // 定义了一个同步函数对传入的数组进行遍历乘二操作，同时每执行一次就会给 executeCount 累加。最终我们需要实现一个 batcher 函数，使用其对该同步函数包装后，实现每次调用依旧返回预期的二倍结果，同时还需要保证 executeCount 执行次数为1。
+  let executeCount = 0
+  const fn = (nums) => {
+    executeCount++
+    return nums.map((x) => x * 2)
+  }
+
+  const batcher = (f) => {
+    // todo 实现 batcher 函数
+  }
+
+  const batchedFn = batcher(fn)
+
+  const main = async () => {
+    const [r1, r2, r3] = await Promise.all([
+      batchedFn([1, 2, 3]),
+      batchedFn([4, 5]),
+      batchedFn([7, 8, 9]),
+    ])
+
+    //满足以下 test case
+    assert(r1).tobe([2, 4, 6])
+    assert(r2).tobe([8, 10])
+    assert(r3).tobe([14, 16, 18])
+    assert(executeCount).tobe(1)
+  }
+
+  // setTimeout 解法
+  const batcher = (f) => {
+    let nums = []
+    const p = new Promise((resolve) =>
+      setTimeout((_) => resolve(f(nums)), 100)
+    )
+
+    return (arr) => {
+      let start = nums.length
+      nums = nums.concat(arr)
+      let end = nums.length
+      return p.then((ret) => ret.slice(start, end))
     }
+  }
 
-    // setTimeout 解法
-    const batcher = (f) => {
-      let nums = []
-      const p = new Promise((resolve) =>
-        setTimeout((_) => resolve(f(nums)), 100)
+  // Promise 解法
+  const batcher = (f) => {
+    let nums = []
+    const p = Promise.resolve().then((_) => f(nums))
+
+    return (arr) => {
+      let start = nums.length
+      nums = nums.concat(arr)
+      let end = nums.length
+      return p.then((ret) => ret.slice(start, end))
+    }
+  }
+
+
+
+
+
+
+
+
+  // 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
+  /* LazyPig("Peggy")输出:
+Hello，I'm Peggy！
+ 
+LazyPig("Peggy").sleep(10).eat("dinner")输出
+Hello，I'm Peggy！
+//等待10秒..
+Wake up after 10
+Eat dinner~
+ 
+LazyPig("Peggy").eat("dinner").eat("supper")输出
+Hello，I'm Peggy！
+Eat dinner~
+Eat supper~
+ 
+以此类推。
+*/
+
+  // 利用promise
+  function LazyPig(v) {
+    return new F(v)
+  }
+  function F(v) {
+    console.log(`Hello，I'm ${v}！`)
+    this.tmp = Promise.resolve()
+  }
+  F.prototype = {
+    sleep(t) {
+      this.tmp = this.tmp.then(
+        () =>
+          new Promise((resolve) => {
+            setTimeout(resolve, t * 1000)
+          })
       )
+      return this
+    },
+    eat(v) {
+      this.tmp = this.tmp.then(() => {
+        console.log(`Eat ${v}`)
+      })
+      return this
+    },
+  }
+  LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
 
-      return (arr) => {
-        let start = nums.length
-        nums = nums.concat(arr)
-        let end = nums.length
-        return p.then((ret) => ret.slice(start, end))
+  // 手动构建任务数组
+  function LazyPig(name) {
+    return new Lazy(name)
+  }
+  function Lazy(name) {
+    this.name = name
+    this.task = []
+    console.log("Hi, 我是" + name)
+    let _this = this
+    let fn = (function () {
+      return function () {
+        _this.next()
       }
-    }
-
-    // Promise 解法
-    const batcher = (f) => {
-      let nums = []
-      const p = Promise.resolve().then((_) => f(nums))
-
-      return (arr) => {
-        let start = nums.length
-        nums = nums.concat(arr)
-        let end = nums.length
-        return p.then((ret) => ret.slice(start, end))
-      }
-    }
-
-    // 评测题目2: 实现一个LazyPig，可以按照以下方式调用:
-    /* LazyPig("Peggy")输出:
-  Hello，I'm Peggy！
-  
-  LazyPig("Peggy").sleep(10).eat("dinner")输出
-  Hello，I'm Peggy！
-  //等待10秒..
-  Wake up after 10
-  Eat dinner~
-  
-  LazyPig("Peggy").eat("dinner").eat("supper")输出
-  Hello，I'm Peggy！
-  Eat dinner~
-  Eat supper~
-  
-  以此类推。
-  */
-
-    // 利用promise
-    function LazyPig(v) {
-      return new F(v)
-    }
-    function F(v) {
-      console.log(`Hello，I'm ${v}！`)
-      this.tmp = Promise.resolve()
-    }
-    F.prototype = {
-      sleep(t) {
-        this.tmp = this.tmp.then(
-          () =>
-            new Promise((resolve) => {
-              setTimeout(resolve, t * 1000)
-            })
-        )
-        return this
-      },
-      eat(v) {
-        this.tmp = this.tmp.then(() => {
-          console.log(`Eat ${v}`)
-        })
-        return this
-      },
-    }
-    LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
-
-    // 手动构建任务数组
-    function LazyPig(name) {
-      return new Lazy(name)
-    }
-    function Lazy(name) {
-      this.name = name
-      this.task = []
-      console.log("Hi, 我是" + name)
+    })()
+    this.task.push(fn)
+    setTimeout(() => {
+      _this.next()
+    }, 0)
+  }
+  Lazy.prototype = {
+    next: function () {
+      var fn = this.task.shift()
+      fn && fn()
+    },
+    sleep: function (time) {
       let _this = this
-      let fn = (function () {
+      let fn = (function (time) {
         return function () {
+          setTimeout(() => {
+            console.log(_this.name + " Wake up !")
+            _this.next()
+          }, time * 1000)
+        }
+      })(time)
+      this.task.push(fn)
+      return this
+    },
+    eat: function (smt) {
+      let _this = this
+      let fn = (function (smt) {
+        return function () {
+          console.log(_this.name + " is eating " + smt)
           _this.next()
         }
-      })()
+      })(smt)
       this.task.push(fn)
-      setTimeout(() => {
-        _this.next()
-      }, 0)
-    }
-    Lazy.prototype = {
-      next: function () {
-        var fn = this.task.shift()
-        fn && fn()
-      },
-      sleep: function (time) {
-        let _this = this
-        let fn = (function (time) {
-          return function () {
-            setTimeout(() => {
-              console.log(_this.name + " Wake up !")
-              _this.next()
-            }, time * 1000)
-          }
-        })(time)
-        this.task.push(fn)
-        return this
-      },
-      eat: function (smt) {
-        let _this = this
-        let fn = (function (smt) {
-          return function () {
-            console.log(_this.name + " is eating " + smt)
-            _this.next()
-          }
-        })(smt)
-        this.task.push(fn)
-        return this
-      },
-    }
-    LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
+      return this
+    },
+  }
+  LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
 
-    // 用while同步阻塞
-    function LazyPig(name) {
-      console.log(`Hello,I'm ${name}`)
-      var fn = {}
-      fn.sleep = function (time) {
-        console.log(`Wake up ${time}s`)
-        let start = Date.now()
-        while (Date.now() - start <= time * 1000) {}
-        console.log(`Wake up down`)
-        return fn
-      }
-      fn.eat = function (food) {
-        console.log(`Eat ${food}`)
-        return fn
-      }
+  // 用while同步阻塞
+  function LazyPig(name) {
+    console.log(`Hello,I'm ${name}`)
+    var fn = {}
+    fn.sleep = function (time) {
+      console.log(`Wake up ${time}s`)
+      let start = Date.now()
+      while (Date.now() - start <= time * 1000) { }
+      console.log(`Wake up down`)
       return fn
     }
-    LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
+    fn.eat = function (food) {
+      console.log(`Eat ${food}`)
+      return fn
+    }
+    return fn
+  }
+  LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
 
-    function LazyPig(name) {
-      console.log(`Hello, I\'m ${name}！`)
-      var arr = new Array()
-      var isRec = false
-      var isSteep = false
-      this.sleep = function (n) {
-        isSteep = true
-        arr.push({
-          fun: "sleep",
-          val: n,
-        })
-        if (!isRec) {
-          recursive()
-        }
-        return this
-      }
-      this.eat = function (input) {
-        if (isSteep) {
-          arr.push({
-            fun: "eat",
-            val: input,
-          })
-        } else {
-          _eat(input)
-        }
-        return this
-      }
-      function _eat(input) {
-        console.log(`Eat ${input}`)
-      }
-      function recursive() {
-        isRec = true
-        if (!!arr) {
-          var obj = arr.shift()
-          if (!obj) return
-          if (obj.fun === "sleep") {
-            console.log(`Wake up after  ${obj.val}`)
-            setTimeout(function () {
-              recursive()
-            }, obj.val * 1000)
-          } else {
-            _eat(obj.val)
-            recursive()
-          }
-        }
+  function LazyPig(name) {
+    console.log(`Hello, I\'m ${name}！`)
+    var arr = new Array()
+    var isRec = false
+    var isSteep = false
+    this.sleep = function (n) {
+      isSteep = true
+      arr.push({
+        fun: "sleep",
+        val: n,
+      })
+      if (!isRec) {
+        recursive()
       }
       return this
     }
-    LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
-
-    // 限制最多同时并发请求数
-    // function mockFetch(url) {
-    //   return new Promise((resolve) => {
-    //     const time = Math.floor(Math.random() * 3) + 1
-    //     console.log("before settimeout", url, Date.now())
-    //     setTimeout(() => {
-    //       console.log("complete settimeout", url, Date.now())
-    //       resolve(`url - ${url}`)
-    //     }, time * 1000)
-    //   })
-    // }
-
-    // var resultArr = []
-    // var resolvedNum = 0
-    // var maxIndex = 0
-    // var resF
-    // function tmp(url, index, num, urlList) {
-    //   // if (index >= urlList.length) return
-    //   if (maxIndex === urlList.length) {
-    //     resF(resultArr)
-    //     return
-    //   }
-    //   // if (resultArr.length === urlList.length) {
-    //   //   resF(resultArr)
-    //   //   return
-    //   // }
-    //   if (maxIndex >= urlList.length) {
-    //     return
-    //   }
-    //   maxIndex = Math.max(index, maxIndex)
-    //   console.log(
-    //     "~ file: 123.js ~ line 25 ~ tmp ~ url, index, num:",
-    //     url,
-    //     index,
-    //     num,
-    //     maxIndex,
-    //     resultArr
-    //   )
-    //   mockFetch(url).then((res) => {
-    //     resolvedNum++
-    //     resultArr[index] = res
-    //     // if (resolvedNum === urlList.length) return
-    //     if (index >= urlList.length) return
-    //     tmp(urlList[maxIndex + 1], maxIndex + 1, num, urlList)
-    //   })
-    // }
-    // function sendRequest(urlList, num, f) {
-    //   resF = f
-    //   for (let i = 0; i < num; i++) {
-    //     tmp(urlList[i], i, num, urlList)
-    //   }
-    // }
-
-    // var urlList = ["a", "b", "c", "d", "e"]
-
-    // sendRequest(urlList, 3, (res) => {
-    //   console.log("xxxxx", maxIndex, res) // url-a url-b url-c url-d url-e
-    // })
-
-    // https://juejin.cn/post/6989103878436290568
-    // 没有用到当前运行的请求的最大index，用的是shift
-    function send() {
-      let total = 100
-      // 初始化数组
-      let initList = Array.from({ length: total }).map((k, i) => i)
-      // 最大并发次数
-      const limit = 5
-      // 最终结果
-      let result = {}
-      // 已经请求完的个数
-      let resultLength = 0
-
-      //定义异步函数
-      const asyncGet = (v) =>
-        new Promise((resolve) => {
-          setTimeout(() => resolve(v), 1000 * Math.random())
+    this.eat = function (input) {
+      if (isSteep) {
+        arr.push({
+          fun: "eat",
+          val: input,
         })
-
-      // 初始化100个异步请求函数，当闭包被执行的时候会执行一个请求，当请求执行完后，会获取下一个并执行
-      // map后的每一项是一个未执行的函数
-      let runningList = initList.map((item) => {
-        return () => {
-          return asyncGet(item).then((res) => {
-            console.log("res:" + res)
-            resultLength++
-            result[item] = "final " + res
-            let next = runningList.shift()
-            if (next) {
-              next()
-            } else if (resultLength === total) {
-              console.log(
-                "全部执行完成",
-                initList.map((it) => result[it]),
-                result
-              )
-            }
-          })
+      } else {
+        _eat(input)
+      }
+      return this
+    }
+    function _eat(input) {
+      console.log(`Eat ${input}`)
+    }
+    function recursive() {
+      isRec = true
+      if (!!arr) {
+        var obj = arr.shift()
+        if (!obj) return
+        if (obj.fun === "sleep") {
+          console.log(`Wake up after  ${obj.val}`)
+          setTimeout(function () {
+            recursive()
+          }, obj.val * 1000)
+        } else {
+          _eat(obj.val)
+          recursive()
         }
-      })
-      const arr = []
-      // 一次性取出最大并发数并执行
-      for (let i = 0; i < limit; i++) {
-        let fn = runningList.shift()
-        arr.push(fn())
       }
     }
+    return this
+  }
+  LazyPig("Peggy").sleep(3).eat("dinner").sleep(1).eat("supper")
 
-    send()
 
-    // 利用 Promise 封装一个异步加载图片的方法，并限制并发个数，即同时请求的个数不超过3个。
-    // 采用全局index，替代采用额外的数组shift
-    let count = 0
-    let index = 0
-    let asyncGet = (v) => {
-      console.log("begin:", v)
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log("end:", v)
-          resolve(v)
-        }, 1000 * Math.random())
+
+
+
+
+
+  // 限制最多同时并发请求数
+  // function mockFetch(url) {
+  //   return new Promise((resolve) => {
+  //     const time = Math.floor(Math.random() * 3) + 1
+  //     console.log("before settimeout", url, Date.now())
+  //     setTimeout(() => {
+  //       console.log("complete settimeout", url, Date.now())
+  //       resolve(`url - ${url}`)
+  //     }, time * 1000)
+  //   })
+  // }
+
+  // var resultArr = []
+  // var resolvedNum = 0
+  // var maxIndex = 0
+  // var resF
+  // function tmp(url, index, num, urlList) {
+  //   // if (index >= urlList.length) return
+  //   if (maxIndex === urlList.length) {
+  //     resF(resultArr)
+  //     return
+  //   }
+  //   // if (resultArr.length === urlList.length) {
+  //   //   resF(resultArr)
+  //   //   return
+  //   // }
+  //   if (maxIndex >= urlList.length) {
+  //     return
+  //   }
+  //   maxIndex = Math.max(index, maxIndex)
+  //   console.log(
+  //     "~ file: 123.js ~ line 25 ~ tmp ~ url, index, num:",
+  //     url,
+  //     index,
+  //     num,
+  //     maxIndex,
+  //     resultArr
+  //   )
+  //   mockFetch(url).then((res) => {
+  //     resolvedNum++
+  //     resultArr[index] = res
+  //     // if (resolvedNum === urlList.length) return
+  //     if (index >= urlList.length) return
+  //     tmp(urlList[maxIndex + 1], maxIndex + 1, num, urlList)
+  //   })
+  // }
+  // function sendRequest(urlList, num, f) {
+  //   resF = f
+  //   for (let i = 0; i < num; i++) {
+  //     tmp(urlList[i], i, num, urlList)
+  //   }
+  // }
+
+  // var urlList = ["a", "b", "c", "d", "e"]
+
+  // sendRequest(urlList, 3, (res) => {
+  //   console.log("xxxxx", maxIndex, res) // url-a url-b url-c url-d url-e
+  // })
+
+  // https://juejin.cn/post/6989103878436290568
+  // 没有用到当前运行的请求的最大index，用的是shift
+  function send() {
+    let total = 100
+    // 初始化数组
+    let initList = Array.from({ length: total }).map((k, i) => i)
+    // 最大并发次数
+    const limit = 5
+    // 最终结果
+    let result = {}
+    // 已经请求完的个数
+    let resultLength = 0
+
+    //定义异步函数
+    const asyncGet = (v) =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve(v), 1000 * Math.random())
       })
-    }
-    function loadControl(arr) {
-      if (index >= arr.length) return
-      if (count < 3) {
-        console.log(count, index)
-        count++
-        asyncGet(arr[index])
-          .then(() => {
-            count--
-          })
-          .then(() => loadControl(arr, ++index))
+
+    // 初始化100个异步请求函数，当闭包被执行的时候会执行一个请求，当请求执行完后，会获取下一个并执行
+    // map后的每一项是一个未执行的函数
+    let runningList = initList.map((item) => {
+      return () => {
+        return asyncGet(item).then((res) => {
+          console.log("res:" + res)
+          resultLength++
+          result[item] = "final " + res
+          let next = runningList.shift()
+          if (next) {
+            next()
+          } else if (resultLength === total) {
+            console.log(
+              "全部执行完成",
+              initList.map((it) => result[it]),
+              result
+            )
+          }
+        })
       }
+    })
+    const arr = []
+    // 一次性取出最大并发数并执行
+    for (let i = 0; i < limit; i++) {
+      let fn = runningList.shift()
+      arr.push(fn())
     }
-    let arr = Array.from({ length: 50 }).map((k, i) => "url" + i)
-    // 这里要同时调用limit次
-    loadControl(arr)
-    loadControl(arr)
-    loadControl(arr)
+  }
 
-    // https://blog.csdn.net/qq_34629352/article/details/105955188
-    // 将一个递归函数拆分成两个，一个函数只负责计数和发送请求，另外一个负责调度。
+  send()
 
-    var urls = Array.from({ length: 50 }).map((k, i) => "url" + i)
-    var asyncGet = (v) => {
-      console.log("begin:", v)
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log("end:", v)
-          resolve(v)
-        }, 1000 * Math.random())
-      })
-    }
-
-    var count = 0 //当前正在进行数
-    // 封装请求的异步函数,增加计数器功能
-    function request() {
+  // 利用 Promise 封装一个异步加载图片的方法，并限制并发个数，即同时请求的个数不超过3个。
+  // 采用全局index，替代采用额外的数组shift
+  let count = 0
+  let index = 0
+  let asyncGet = (v) => {
+    console.log("begin:", v)
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log("end:", v)
+        resolve(v)
+      }, 1000 * Math.random())
+    })
+  }
+  function loadControl(arr) {
+    if (index >= arr.length) return
+    if (count < 3) {
+      console.log(count, index)
       count++
-      asyncGet(urls.shift())
+      asyncGet(arr[index])
         .then(() => {
           count--
         })
-        .then(schedule)
+        .then(() => loadControl(arr, ++index))
     }
-    // 负责调度的函数
-    function schedule() {
-      if (urls.length > 0 && count <= 3) {
-        request()
-      }
-    }
+  }
+  let arr = Array.from({ length: 50 }).map((k, i) => "url" + i)
+  // 这里要同时调用limit次
+  loadControl(arr)
+  loadControl(arr)
+  loadControl(arr)
 
-    function async1() {
-      for (var i = 0; i < 3; i++) {
-        request()
-      }
-    }
-    async1()
+  // https://blog.csdn.net/qq_34629352/article/details/105955188
+  // 将一个递归函数拆分成两个，一个函数只负责计数和发送请求，另外一个负责调度。
 
-    // 采用async await制造阻塞block
-    var urls = Array.from({ length: 50 }).map((k, i) => "url" + i)
-    var asyncGet = (v) => {
-      console.log("begin:", v)
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log("end:", v)
-          resolve(v)
-        }, 1000 * Math.random())
-      })
-    }
-    // 计数器
-    var count = 0
-    // 全局锁
-    var lock = []
-    var l = urls.length
-    // 阻塞函数
-    function block() {
-      // let _resolve
-      return new Promise((resolve, reject) => {
-        // resolve不执行,将其推入lock数组，这里不需要值，只是纯粹的阻塞用
-        lock.push(resolve)
-      })
-    }
-    // 叫号机
-    function next() {
-      lock.length && lock.shift()()
-    }
-    async function bao() {
-      if (count >= 3) {
-        //超过限制利用await和promise进行阻塞;
-        await block()
-      }
-      if (urls.length > 0) {
-        // console.log(count)
-        count++
-        await asyncGet(urls.shift())
+  var urls = Array.from({ length: 50 }).map((k, i) => "url" + i)
+  var asyncGet = (v) => {
+    console.log("begin:", v)
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log("end:", v)
+        resolve(v)
+      }, 1000 * Math.random())
+    })
+  }
+
+  var count = 0 //当前正在进行数
+  // 封装请求的异步函数,增加计数器功能
+  function request() {
+    count++
+    asyncGet(urls.shift())
+      .then(() => {
         count--
-        next()
-      }
-    }
-    for (let i = 0; i < l; i++) {
-      bao()
-    }
-
-    // 目测小众 不建议用
-    // 用 Promise.race来实现，先并发请求3个图片资源，这样可以得到 3 个 Promise实例，组成一个数组promises ，然后不断的调用 Promise.race 来返回最快改变状态的 Promise，然后从数组（promises ）中删掉这个 Promise 对象实例，再加入一个新的 Promise实例，直到全部的 url 被取完。
-
-    function limitLoad(urls, handler, limit) {
-      // 对数组做一个拷贝
-      const sequence = [].concat(urls)
-      let promises = []
-
-      //并发请求到最大数
-      promises = sequence.splice(0, limit).map((url, index) => {
-        // 这里返回的 index 是任务在 promises 的脚标，
-        //用于在 Promise.race 之后找到完成的任务脚标
-        return handler(url).then(() => {
-          return index
-        })
       })
-      ;(async function loop() {
+      .then(schedule)
+  }
+  // 负责调度的函数
+  function schedule() {
+    if (urls.length > 0 && count <= 3) {
+      request()
+    }
+  }
+
+  function async1() {
+    for (var i = 0; i < 3; i++) {
+      request()
+    }
+  }
+  async1()
+
+  // 采用async await制造阻塞block
+  var urls = Array.from({ length: 50 }).map((k, i) => "url" + i)
+  var asyncGet = (v) => {
+    console.log("begin:", v)
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log("end:", v)
+        resolve(v)
+      }, 1000 * Math.random())
+    })
+  }
+  // 计数器
+  var count = 0
+  // 全局锁
+  var lock = []
+  var l = urls.length
+  // 阻塞函数
+  function block() {
+    // let _resolve
+    return new Promise((resolve, reject) => {
+      // resolve不执行,将其推入lock数组，这里不需要值，只是纯粹的阻塞用
+      lock.push(resolve)
+    })
+  }
+  // 叫号机
+  function next() {
+    lock.length && lock.shift()()
+  }
+  async function bao() {
+    if (count >= 3) {
+      //超过限制利用await和promise进行阻塞;
+      await block()
+    }
+    if (urls.length > 0) {
+      // console.log(count)
+      count++
+      await asyncGet(urls.shift())
+      count--
+      next()
+    }
+  }
+  for (let i = 0; i < l; i++) {
+    bao()
+  }
+
+  // 目测小众 不建议用
+  // 用 Promise.race来实现，先并发请求3个图片资源，这样可以得到 3 个 Promise实例，组成一个数组promises ，然后不断的调用 Promise.race 来返回最快改变状态的 Promise，然后从数组（promises ）中删掉这个 Promise 对象实例，再加入一个新的 Promise实例，直到全部的 url 被取完。
+
+  function limitLoad(urls, handler, limit) {
+    // 对数组做一个拷贝
+    const sequence = [].concat(urls)
+    let promises = []
+
+    //并发请求到最大数
+    promises = sequence.splice(0, limit).map((url, index) => {
+      // 这里返回的 index 是任务在 promises 的脚标，
+      //用于在 Promise.race 之后找到完成的任务脚标
+      return handler(url).then(() => {
+        return index
+      })
+    })
+      ; (async function loop() {
         let p = Promise.race(promises)
         for (let i = 0; i < sequence.length; i++) {
           p = p.then((res) => {
@@ -733,48 +777,49 @@
           })
         }
       })()
-    }
-    // limitLoad(dataLists, loadImg, 3)
+  }
+  // limitLoad(dataLists, loadImg, 3)
 
-    // 15 行代码实现通用并发控制（javascript）
-    /**
-     * @params list {Array} - 要迭代的数组
-     * @params limit {Number} - 并发数量控制数
-     * @params asyncHandle {Function} - 对`list`的每一个项的处理函数，参数为当前处理项，必须 return 一个Promise来确定是否继续进行迭代
-     * @return {Promise} - 返回一个 Promise 值来确认所有数据是否迭代完成
-     */
+  // 15 行代码实现通用并发控制（javascript）
+  /**
+   * @params list {Array} - 要迭代的数组
+   * @params limit {Number} - 并发数量控制数
+   * @params asyncHandle {Function} - 对`list`的每一个项的处理函数，参数为当前处理项，必须 return 一个Promise来确定是否继续进行迭代
+   * @return {Promise} - 返回一个 Promise 值来确认所有数据是否迭代完成
+   */
 
-    let mapLimit = (list, limit, asyncHandle) => {
-      let recursion = (arr) => {
-        return asyncHandle(arr.shift()).then(() => {
-          if (arr.length !== 0) return recursion(arr)
-          // 数组还未迭代完，递归继续进行迭代,
-          // 最终会打印finish次数为limit次
-          else return "finish"
-        })
-      }
-
-      let listCopy = [].concat(list)
-      let asyncList = [] // 正在进行的所有并发异步操作
-      while (limit--) {
-        asyncList.push(recursion(listCopy))
-      }
-      return Promise.all(asyncList) // 所有并发异步操作都完成后，本次并发控制迭代完成
-    }
-
-    // test demo
-    var dataLists = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 100, 123]
-    var count = 0
-    mapLimit(dataLists, 3, (curItem) => {
-      return new Promise((resolve) => {
-        count++
-        setTimeout(() => {
-          console.log(curItem, "当前并发量:", count--)
-          resolve()
-        }, Math.random() * 5000)
+  let mapLimit = (list, limit, asyncHandle) => {
+    let recursion = (arr) => {
+      return asyncHandle(arr.shift()).then(() => {
+        if (arr.length !== 0) return recursion(arr)
+        // 数组还未迭代完，递归继续进行迭代,
+        // 最终会打印finish次数为limit次
+        else return "finish"
       })
-    }).then((response) => {
-      console.log("finish", response)
+    }
+
+    let listCopy = [].concat(list)
+    let asyncList = [] // 正在进行的所有并发异步操作
+    while (limit--) {
+      asyncList.push(recursion(listCopy))
+    }
+    return Promise.all(asyncList) // 所有并发异步操作都完成后，本次并发控制迭代完成
+  }
+
+  // test demo
+  var dataLists = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 100, 123]
+  var count = 0
+  mapLimit(dataLists, 3, (curItem) => {
+    return new Promise((resolve) => {
+      count++
+      setTimeout(() => {
+        console.log(curItem, "当前并发量:", count--)
+        resolve()
+      }, Math.random() * 5000)
     })
-  </script>
+  }).then((response) => {
+    console.log("finish", response)
+  })
+</script>
+
 </html>
