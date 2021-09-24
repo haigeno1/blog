@@ -102,12 +102,13 @@ Function.prototype.bind2 = function (context) {
   }
   var self = this;
   var args = Array.prototype.slice.call(arguments, 1);
-  var fNOP = function () { };
+  var fNOP = function () { this.fnop = "fnop"};
   var fBound = function () {
     var bindArgs = Array.prototype.slice.call(arguments);
-    // 当作为构造函数时，this 指向实例，此时结果为 true，将绑定函数的 this 指向该实例，可以让实例获得来自绑定函数的值
-    // 以上面的是 demo 为例，如果改成 `this instanceof fBound ? null : context`，实例只是一个空对象，将 null 改成 this ，实例会具有 habit 属性
-    // 当作为普通函数时，this 指向 window，此时结果为 false，将绑定函数的 this 指向 context
+    // 当作为构造函数时，this 指向实例，此时instanceof结果为 true，将绑定函数的 this 指向该实例，可以让实例获得来自绑定函数的值
+    // 以上面的是 demo 为例，如果改成 `this instanceof fBound ? null : context`，实例只是一个空对象，将null改成this，实例会具有habit属性 ，为null的时候this为window
+    // 当作为普通函数时，this 指向 window，此时instanceof结果为 false，将绑定函数的 this 指向 context
+    // 因为多了fNOP这一层，所以实际bind后的函数作为构造函数的时候，new出来的对象比原生bind原型链多了一个空层
     return self.apply(this instanceof fNOP ? this : context, args.concat(bindArgs));
   }
   fNOP.prototype = this.prototype;
@@ -120,29 +121,66 @@ Function.prototype.bind2 = function (context) {
   // }
 }
 
-var value = 2;
-var foo = {
-  value: 1
+var value = "windowValue";
+var context = {
+  value: "contextValue"
 };
-function bar(name, age) {
+function f(name, age) {
   this.habit = 'shopping';
+  console.log(this);
   console.log(this.value);
   console.log(name);
   console.log(age);
 }
-bar.prototype.friend = 'kevin';
+f.prototype.friend = 'kevin';
 
-var bindFoo = bar.bind(foo, 'Jack');
-var obj = new bindFoo(20);
+
+f('Jack', 20)
+// Window
+// windowValue
+// Jack
+// 20
+
+
+obj = new f('Jack', 20)
+obj.habit // 'shopping'
+obj.friend // 'kevin'
+// {habit: 'shopping'}
 // undefined
 // Jack
 // 20
 
-obj.habit;
-// shopping
 
-obj.friend;
-// kevin
+var value = "windowValue";
+var context = {
+  value: "contextValue"
+};
+function f(name, age) {
+  this.habit = 'shopping';
+  console.log(this);
+  console.log(this.value);
+  console.log(name);
+  console.log(age);
+}
+f.prototype.friend = 'kevin';
+// var bindF = f.bind(context, 'Jack');
+var bindF = f.bind2(context, 'Jack');
+
+bindF(20);
+// {value: 'contextValue', habit: 'shopping'}
+// contextValue
+// Jack
+// 20
+
+
+obj1 = new bindF(20);
+// {habit: 'shopping'}
+// undefined
+// Jack
+// 20
+
+obj1.habit; // 'shopping'
+obj1.friend; // 'kevin'
 
 
 
