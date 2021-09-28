@@ -12,3 +12,7 @@ git rm -r --cached .
 
 查看两个星期内的改动
 git whatchanged --since='2 weeks ago'
+
+git reflog 或者 git fsck --full
+https://github.com/haigeno1/picgo/blob/main/git-branchless-revise.png
+/bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
