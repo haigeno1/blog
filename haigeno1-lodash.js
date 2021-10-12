@@ -1140,6 +1140,28 @@ var haigeno1 = (function(){
     return value.match(/\w+/gi)
   }
 
+  // _.get(object, path, [defaultValue]) 
+
+  // var object = { 'a': [{ 'b': { 'c': 3 } }] }; 
+  // _.get(object, 'a[0].b.c');  // => 3
+  // _.get(object, 'a.b.c', 'default');  default
+
+
+  // a[3].b -> a.3.b
+
+  function get(source, path, defaultValue) {
+    const paths = path.replace(/\[(\d+)\]/gm, '.$1').split('.')
+    let result = source
+    for (const p of paths) {
+        result = Object(result)[p]
+        if (result === undefined) {
+            return defaultValue
+        }
+    }
+    return result
+  }
+
+
   property = path => obj => get(obj,path)
   propertyOf = obj => path => get(obj,path)
 
