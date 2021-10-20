@@ -16,3 +16,10 @@ git whatchanged --since='2 weeks ago'
 git reflog 或者 git fsck --full
 https://github.com/haigeno1/picgo/blob/main/git-branchless-revise.png
 /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
+
+// https://bibibug.com/question/Git_pull_rebase_preserve_merges
+git rebase --preserve-merges master
+
+https://gb.yekai.net/concepts/subtree-vs-submodule
+subtree 和 submodule 的目的都是用于 git 子仓库管理，二者的主要区别在于，subtree 属于拷贝子仓库，而 submodule 属于引用子仓库。
+
