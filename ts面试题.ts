@@ -124,7 +124,8 @@ type fn = (name: string)=> boolean;
 type T1 = FuncReturnType<fn>;
 
 
-// 如果T包含的类型 是 U包含的类型的 '子集', 当T为联合类型的时候，会进行拆分
+// 如果T包含的类型 是 U包含的类型的 '子集', 当T为联合类型的时候，会进行拆分.
+// extends前面的参数为联合类型时则会分解（依次遍历所有的子类型进行条件判断）联合类型进行判断。然后将最终的结果组成新的联合类型。
 type Diff<T, U> = T extends U ? never : T; // 找出T的差集
 type Filter<T, U> = T extends U ? T : never; // 找出交集
 
@@ -140,6 +141,13 @@ type T31 = Filter<"a" | "b" | "c" | "d", "a" | "c" | "f">;  // => "a" | "c"
 
 let demo1: Diff<number, string>; // => number
 
+// 如果不想被分解（分发），做法也很简单，可以通过简单的元组类型包裹
+
+//  type P<T> = T extends 'x' ? 1 : 2;
+//  type A3 = P<'x' | 'y'> // 1 | 2
+
+//   type P<T> = [T] extends ['x'] ? 1 : 2;
+//   type A4 = P<'x' | 'y'> // 2
 
 
 
