@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function clone(target, map = new WeakMap()) {
+            if (typeof target === "object") {
+                let cloneTarget = Array.isArray(target) ? [] : {}
+                if (map.get(target)) {
+                    return map.get(target)
+                }
+                map.set(target, cloneTarget)
+                for (const key in target) {
+                    cloneTarget[key] = clone(target[key], map)
+                }
+                return cloneTarget
+            } else {
+                return target
+            }
+        }
+
+        function hasCycle(obj, map = new WeakMap()) {
+            if (typeof target === "object") {
+                let cloneTarget = Array.isArray(target) ? [] : {}
+                if (map.get(target)) {
+                    return map.get(target)
+                }
+                map.set(target, cloneTarget)
+                for (const key in target) {
+                    cloneTarget[key] = hasCycle(target[key], map)
+                }
+                return cloneTarget
+            }
+        }
+
+        let tmp = { age: 18 }
+        let src = {
+            a: 1,
+            b: { bb: 'bb' },
+            c: [3, 33, { cc: 333 }],
+            d: tmp,
+            e: tmp,
+        }
+        src.f = src.b
+        src.g = src
+
+        console.log(hasCycle(src))
+        console.log(clone(src))
+
+    </script>
+</body>
+
+</html>

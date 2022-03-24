@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function mockP(value,time=1000) {
+            return new Promise(resolve => {
+                setTimeout(() => resolve(value), time)
+            })
+        }
+        
+        // async function fa() {
+        //     console.log("fa running")
+        //     const res = await mockP('aa',2000)
+        //     console.log("fa end res")
+        //     return 11
+        // }
+        // async function fb() {
+        //     console.log("fb running")
+        //     const res = await mockP('bb', 3000)
+        //     console.log("fb end res")
+        // }
+        // async function main1() {
+        //     console.log("main1 row1")
+        //     const resa = fa();
+        //     console.log("main1 resa", resa.then(console.log))
+        //     console.log("main1 row2")
+        //     fb();
+        //     // await fb();
+        //     console.log("main1 row3")
+        // }
+        // async function main2() {
+        //     console.log("main2 row1")
+        //     await fa();
+        //     console.log("main2 row2")
+        //     await fb();
+        //     console.log("main2 row3")
+        // }
+        // main2()
+        // main1()
+
+        // 结论: async定义的时候是异步,但是调用的时候 是否异步执行的标准就是 是否有await,没有await的时候无论是在同步还是async函数中都相当于 不等待.
+
+
+        // async function f() {
+        //     await mockP(11)
+        //     let arr1 = [1,2,3,4]
+        //     arr1.forEach(async it => {
+        //         console.log(it, 'start');
+        //         await mockP(it,2000)
+        //         console.log(it, 'end');
+        //     })
+        //     console.log('xxx')
+        // }
+        // f()
+
+        
+        
+    </script>
+</body>
+
+</html>
