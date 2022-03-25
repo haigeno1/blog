@@ -44,3 +44,12 @@ Vue React对比
             声明在setup函数内，一次组件实例化只调用一次setup，而React Hook每次重渲染都需要调用Hook，使得React的GC比Vue更有压力，性能也相对于Vue来说也较慢
             Compositon API的调用不需要顾虑调用顺序，也可以在循环、条件、嵌套函数中使用
             响应式系统自动实现了依赖收集，进而组件的部分的性能优化由Vue内部自己完成，而React Hook需要手动传入依赖，而且必须必须保证依赖的顺序，让useEffect、useMemo等函数正确的捕获依赖变量，否则会由于依赖不正确使得组件性能下降。
+
+
+computed如何实现
+
+computed计算属性实际上是一个lazy的副作用函数，通过lazy的选项使得副作用函数可以懒执行，将方法getter作为参数传递给effect函数并且options.lazy设置为true，内部定义了一个obj对象，重写了get value的方法执行了副作用函数，最后返回整个obj对象，当计算属性中依赖的响应式数据发生变化，通过value拿到执行之后的结果值。为了避免多次计算设计一个缓存的开关 dirty ，当dirty 为真时才会计算，当数据发生改变时在set中会调用scheduler,这是将dirty设置为true，重新计算
+
+watch如何实现
+
+watch本质上利用了副作用函数重新执行时的可调度性schedluer，在scheduler中执行用户通过watch函数注册的回调函数即可，scheduler指的是当trigger动作触发副作用函数重新执行，在effect函数中增加的第二个options参数
