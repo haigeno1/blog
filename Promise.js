@@ -256,6 +256,57 @@ var Promise = (function () {
     })
   }
 
+  //   Promise.allSettled 的规则是这样：
+  // 所有 Promise 的状态都变化了，那么新返回一个状态是 fulfilled 的 Promise，且它的值是一个数组，数组的每项由所有 Promise 的值和状态组成的对象；
+  // 如果有一个是 pending 的 Promise，则返回一个状态是 pending 的新实例；
+  Promise.allSettled = function(promiseArr) {
+    let result = []
+        
+    return new Promise((resolve, reject) => {
+        promiseArr.forEach((p, i) => {
+            Promise.resolve(p).then(val => {
+                result.push({
+                    status: 'fulfilled',
+                    value: val
+                })
+                if (result.length === promiseArr.length) {
+                    resolve(result) 
+                }
+            }, err => {
+                result.push({
+                    status: 'rejected',
+                    reason: err
+                })
+                if (result.length === promiseArr.length) {
+                    resolve(result) 
+                }
+            })
+        })  
+    })   
+  }
+  // Promise.any 的规则是这样：
+  // 空数组或者所有 Promise 都是 rejected，则返回状态是 rejected 的新 Promsie，且值为 AggregateError 的错误；
+  // 只要有一个是 fulfilled 状态的，则返回第一个是 fulfilled 的新实例；
+  // 其他情况都会返回一个 pending 的新实例；
+  // 作者：大海我来了
+  // 链接：https://juejin.cn/post/6946022649768181774
+  Promise.any = function(promiseArr) {
+    let index = 0
+    return new Promise((resolve, reject) => {
+        if (promiseArr.length === 0) return 
+        promiseArr.forEach((p, i) => {
+            Promise.resolve(p).then(val => {
+                resolve(val)
+            }, err => {
+                index++
+                if (index === promiseArr.length) {
+                  reject(new AggregateError('All promises were rejected'))
+                }
+            })
+        })
+    })
+  }
+
   Promise.resolve = function (value) {
     var promise = new Promise(function (resolve, reject) {
       resolvePromise(promise, value, resolve, reject)
