@@ -119,16 +119,32 @@ function quickSort(arr, left, right) {
 }
 
 function partition(arr, left ,right) {     // 分区操作
-  var pivot = left,                      // 设定基准值（pivot）
-      index = pivot + 1;
+  var pivot = left,                      // 设定基准值（pivot）且一直没有变过
+      index = pivot + 1; // index 始终是pivot及其后面比pivot小的元素索引的右面一个
   for (var i = index; i <= right; i++) {
-      if (arr[i] < arr[pivot]) {
-          swap(arr, i, index);
+      if (arr[i] < arr[pivot]) { // 这里是与pivot对比
+          swap(arr, i, index); // 这里是和index交换
           index++;
       }
   }
   swap(arr, pivot, index - 1);
   return index-1;
+}
+
+function partition1(nums, start, end) {
+    const povit = nums[start];
+    while (start < end) {
+        while (start < end && nums[end] >= povit) {
+            end--;
+        }
+        nums[start] = nums[end];
+        while (start < end && nums[start] < povit) {
+            start++;
+        }
+        nums[end] = nums[start];
+    }
+    nums[start] = povit;
+    return start;
 }
 
 function swap(arr, i, j) {
