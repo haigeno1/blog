@@ -9,5 +9,6 @@ build/
 plugins/
 webpack.config.dump.js
 tmp/
-todos/
+*todo*
+test*
 临时暂存待办.md
