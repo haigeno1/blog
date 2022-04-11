@@ -234,6 +234,17 @@ function myNew(fun) {
   }
 }
 
+function myNew (func, ...args) {
+  const obj = Object.create(func.prototype) // Object.create() 方法创建一个新对象，使用现有的对象来提供新创建的对象的__proto__
+  let result = func.apply(obj, args)
+  return result instanceof Object ? result : obj
+}
+
+let p = myNew(Person, "huihui", 123)
+console.log(p) // Person {name: "huihui", age: 123}
+p.sayName() // huihui
+
+
 
 // objectFactory(name, 'cxk', '18')
 function objectFactory() {

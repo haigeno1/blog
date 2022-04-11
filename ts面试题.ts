@@ -231,3 +231,59 @@ type MethodsTransformation<T> = T extends asyncMethod<infer A, infer B>
 type Connect = (module: EffectModule) => {
   [N in EffectModuleMethods]: MethodsTransformation<EffectModule[N]>
 }
+
+
+
+
+
+
+// https://www.typescriptlang.org/play
+
+// interface 和 type 联系和区别
+// interface 支持，type 也支持：
+  // 都可以用来描述 对象、函数，但是语法又有所不同
+  // 两者都可以互相扩展，但是语法又有所不同
+
+// interface 支持，type 不支持：
+  // 同名合并
+// type 支持, interface 不支持：
+  // type 可以用于基础类型、联合类型、元组
+  // type 语句中还可以使用 索引类型查询操作符 typeof 获取实例的类型进行赋值   type B = typeof div
+  // type 能使用 in 关键字生成映射类型   type Keys = "firstname" | "surname" type DudeType = { [key in Keys]: string }
+
+// interface extends interface
+
+// interface Name { 
+//   name: string; 
+// }
+// interface User extends Name { 
+//   age: number; 
+// }
+
+
+// type 与 type 交叉
+
+// type Name = { 
+//   name: string; 
+// }
+// type User = Name & { age: number  };
+
+
+// interface extends type
+
+// type Name = { 
+//   name: string; 
+// }
+// interface User extends Name { 
+//   age: number; 
+// }
+
+
+// type 与 interface 交叉
+
+// interface Name { 
+//   name: string; 
+// }
+// type User = Name & { 
+//   age: number; 
+// }
