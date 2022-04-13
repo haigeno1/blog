@@ -11,9 +11,11 @@ Super.prototype.sayName = function () {
 };
 
 function Sub(name, age) {
+    // 构造函数继承
     Super.call(this, name);
     this.age = age;
 }
+// 以下是原型继承
 if (!Object.create) {
     Object.create = function (proto) {
         function F() { };
@@ -23,6 +25,8 @@ if (!Object.create) {
 }
 Sub.prototype = Object.create(Super.prototype);
 Sub.prototype.constructor = Sub;
+// 不采用的是原型链继承方式 Sub.prototype = new  Super()
+
 
 var instance1 = new Sub("bai", 29);
 instance1.colors.push("black");
@@ -32,3 +36,6 @@ instance1.sayName();//"bai"
 var instance2 = new Sub("hu", 27);
 console.log(instance2.colors);//['red','blue','green']
 instance2.sayName();//"hu"
+
+
+
