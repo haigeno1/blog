@@ -11,6 +11,13 @@ Vue React对比
         react 通过 function 组件的 hooks api 解决了 class 组件的逻辑复用方案的问题。react 的组件是 class 和 function 两种形式。HOC 和 render props 是 react 的 class 组件支持的两种逻辑复用方案。react 的组件是 class 和 function 两种形式，那么类似高阶函数的高阶组件（high order component）的方式就比较自然，也就是组件套组件，在父组件里面执行一部分逻辑，然后渲染子组件。HOC的优缺点∶优点∶ 逻辑服用、不影响被包裹组件的内部逻辑。缺点∶ hoc传递给被包裹组件的props容易和被包裹后的组件重名，进而被覆盖. 除了多加一层组件的 HOC 方式以外，没有逻辑的部分可以直接把那部分 jsx 作为 props 传入另一个组件来复用，也就是 render props。render prop 是一个用于告知组件需要渲染什么内容的函数 prop."render prop"是指一种在 React 组件之间使用一个值为函数的 prop 共享代码的简单技术.render props的优缺点也很明显∶优点：数据共享、代码复用，将组件内的state作为props传递给调用者，将渲染逻辑交给调用者.缺点：无法在 return 语句外访问数据、嵌套写法不够优雅.
         function 组件要支持 state，于是 react 就在 function 组件的 fiber 节点中加入了 memorizedState 属性用来存储数据，然后在 function 组件里面通过 api 来使用这些数据，这些 api 被叫做 hooks api。
         Fiber 也称协程或者纤程。它和线程并不一样，协程本身是没有并发或者并行能力的（需要配合线程），它只是一种控制流程的让出机制。让出 CPU 的执行权，让 CPU 能在这段时间执行其他的操作。渲染的过程可以被中断，可以将控制权交回浏览器，让位给高优先级的任务，浏览器空闲后再恢复渲染。
+        时间切片，浏览器的每一帧所剩余的时间，链表是的对任务的管控，对于时间的管控是用 自己实现了一套 类似requestAnimation，2个fiber react双缓存机制，
+        React.memo, 
+        useRef 不会影响视图的更新。
+        从优秀的文章入手。
+        卡颂，不建议上来就debug。
+        fiber 组件如何映射到真实dom上，
+
 
     domdiff
         Vue基于snabbdom库，它有较好的速度以及模块机制。Vue Diff使用双向指针，边对比，边更新DOM。
