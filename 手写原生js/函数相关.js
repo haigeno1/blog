@@ -407,11 +407,12 @@ function deepClone(p, c) {
   return c;
 }
 
-function clone(target) {
+// nice
+function deepClone(target) {
   if (typeof target === "object") {
     let cloneTarget = Array.isArray(target) ? [] : {};
     for (const key in target) {
-      cloneTarget[key] = clone(target[key]);
+      cloneTarget[key] = deepClone(target[key]);
     }
     return cloneTarget;
   } else {
@@ -426,7 +427,7 @@ function clone(target) {
 // obj = null;
 // 如果是WeakMap的话，target和obj存在的就是弱引用关系，当下一次垃圾回收机制执行时，这块内存就会被释放掉。
 
-function clone(target, map = new WeakMap()) {
+function deepClone(target, map = new WeakMap()) {
   if (typeof target === "object") {
     let cloneTarget = Array.isArray(target) ? [] : {};
     if (map.get(target)) {
@@ -434,7 +435,7 @@ function clone(target, map = new WeakMap()) {
     }
     map.set(target, cloneTarget);
     for (const key in target) {
-      cloneTarget[key] = clone(target[key], map);
+      cloneTarget[key] = deepClone(target[key], map);
     }
     return cloneTarget;
   } else {
@@ -662,7 +663,7 @@ function hasLoop(obj) {
 }
 
 
-function cycleDetector(obj, objAry) {
+function hsaCycle(obj, objAry) {
   var objAry = objAry || [obj];
   var flag = false;
   for (var name in obj) {
@@ -673,7 +674,7 @@ function cycleDetector(obj, objAry) {
       } else {
         // 先push 后pop  添加的操作在这里
         objAry.push(obj[name]);
-        flag = cycleDetector(obj[name], objAry);
+        flag = hsaCycle(obj[name], objAry);
         if (flag == true) {
           break;
         }
