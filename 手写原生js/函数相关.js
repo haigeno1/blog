@@ -197,28 +197,35 @@ var memoize = function (func, hasher) {
 };
 
 // compose函数组合
-function compose() {
-  var args = arguments;
-  var start = args.length - 1;
+
+const _pipe = (f, g) => (...args) => f(g(...args))
+const compose = (...fns) => fns.reduce(_pipe)
+
+// const _pipe = (f, g) => (...args) => g.call(null, f.apply(null, args))
+// const compose = (...fns) => fns.reverse().reduce(_pipe)
+
+// const _pipe = (f, g) => (...args) => g(f(...args))
+// const compose = (...fns) => fns.reverse().reduce(_pipe)
+
+function compose(...fns) {
+  var start = fns.length - 1;
   return function () {
     var i = start;
-    var result = args[start].apply(this, arguments);
-    while (i--) result = args[i].call(this, result);
+    var result = fns[start].apply(this, arguments);
+    while (i--) result = fns[i].call(this, result);
     return result;
   };
 }
 
-const compose =
-  (...fns) =>
-    (arg) =>
-      fns.reduce((composed, f) => f(compose), arg);
+// test
+// function f1(a, b) { return a + b }
+// function f2(a) { return 2 * a }
+// function f3(a) { return a * a }
+// // let f = compose(f1, f2, f3)
+// let f = compose(f3, f2, f1)
+// console.log(f(1, 2)) // 36
 
-const compose = (...fns) =>
-  fns.reduce(
-    (f, g) =>
-      (...args) =>
-        f(g(...args))
-  );
+
 
 // debounce 防抖:触发完事件 n 秒内不再触发事件才执行
 // 第一版
@@ -289,25 +296,11 @@ function throttle(func, wait) {
   };
 }
 
-const throttle = (fn, delay = 500) => {
-  let flag = true;
-  return (...args) => {
-    if (!flag) return;
-    flag = false;
-    setTimeout(() => {
-      fn.apply(this, args);
-      flag = true;
-    }, delay);
-  };
-};
-
 // 设置定时器,事件会在 n 秒后第一次执行,事件停止触发后依然会再执行一次
 function throttle(func, wait) {
   var timeout;
-  var previous = 0;
-  return function () {
+  return function (...args) {
     context = this;
-    args = arguments;
     if (!timeout) {
       timeout = setTimeout(function () {
         timeout = null;
