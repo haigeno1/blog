@@ -1,6 +1,32 @@
 // 合并有序链表 递归 非递归
 // https://blog.csdn.net/seu_lxy/article/details/89162397
 
+
+var mergeTwoLists = function (l1, l2) {
+  if (l1 === null) return l2
+  if (l2 === null) return l1
+  if (l1.val < l2.val) {
+    l1.next = mergeTwoLists(l1.next, l2)
+    return l1
+  } else {
+    l2.next = mergeTwoLists(l1, l2.next)
+    return l2
+  }
+}
+
+function ListNode(val) {
+  this.val = val;
+  this.next = null;
+}
+
+let a = new ListNode(1)
+a.next = new ListNode(3)
+a.next.next = new ListNode(5)
+
+let b = new ListNode(2)
+b.next = new ListNode(4)
+console.log(JSON.stringify(mergeTwoLists(a, b)))
+
 function Merge(pHead1, pHead2)//每次参加递归的头指针
 {
   var p = null;   //每次链接到新链表的节点，初始化为空 
