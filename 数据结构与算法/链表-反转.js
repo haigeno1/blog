@@ -3,6 +3,19 @@
  * @param {ListNode} head
  * @return {ListNode}
  */
+
+
+function reverse(head) {
+  let prev = null;
+  while (head) {
+    let next = head.next;
+    head.next = prev;
+    prev = head;
+    head = next;
+  }
+  return prev;
+}
+
 var reverseList = function (head) {
   let prevNode = null;
   let currNode = head;
