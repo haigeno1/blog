@@ -1,4 +1,11 @@
 
+// JavaScript专题系列二十篇正式完结！
+// https://github.com/mqyqingfeng/Blog/issues/53
+
+// JavaScript深入系列15篇正式完结！
+// https://github.com/mqyqingfeng/Blog/issues/17
+
+
 // debounce 防抖:触发完事件 n 秒内不再触发事件才执行
 // 第一版
 function debounce(func, wait) {
@@ -22,6 +29,33 @@ function debounce(func, wait) {
     }, wait);
   };
 }
+
+
+// 第五版
+// immediate 参数判断是否是立刻执行
+function debounce(func, wait, immediate) {
+  var timeout, result;
+  return function () {
+      var context = this;
+      var args = arguments;
+      if (timeout) clearTimeout(timeout);
+      if (immediate) {
+          // 如果已经执行过，不再执行
+          var callNow = !timeout;
+          timeout = setTimeout(function(){
+              timeout = null;
+          }, wait)
+          if (callNow) result = func.apply(context, args)
+      }
+      else {
+          timeout = setTimeout(function(){
+              func.apply(context, args)
+          }, wait);
+      }
+      return result;
+  }
+}
+
 
 // 立刻执行， 立即取消
 // 第六版
@@ -51,6 +85,16 @@ function debounce(func, wait, immediate) {
   };
   return debounced;
 }
+
+
+
+
+
+
+
+
+
+
 
 // throttle 节流：持续触发事件，每隔一段时间，只执行一次事件
 // 使用时间戳,事件会立刻执行,事件停止触发后没有办法再执行事件
@@ -151,6 +195,12 @@ function throttle(func, wait, options) {
   };
   return throttled;
 }
+
+
+
+
+
+
 
 
 
@@ -416,3 +466,48 @@ function throttle(func, wait, options) {
 }
 
 
+
+
+
+
+              
+/*
+* Prevents function execution if call frequency is more than one per set period of time
+*/
+const throttle = (cb, delay = 1000) => {
+  let shouldWait = false;
+  let waitingArgs = null;
+  const timeoutFunc = () => {
+      if (waitingArgs === null) {
+          shouldWait = false;
+      } else {
+          cb(...waitingArgs);
+          waitingArgs = null;
+          setTimeout(timeoutFunc, delay);
+      }
+  };
+  return (...args) => {
+      if (shouldWait) {
+          waitingArgs = args;
+          return;
+      }
+      cb(...args);
+      shouldWait = true;
+      setTimeout(timeoutFunc, delay);
+  };
+};
+
+
+
+
+function test() {
+  console.log('testtest')
+}
+var f = debounce(test, 3000)
+f()
+setTimeout(f, 1000)
+setTimeout(f, 4000)
+setTimeout(f, 5000)
+setTimeout(f, 7000)
+setTimeout(f, 9000)
+setTimeout(f, 10000)
