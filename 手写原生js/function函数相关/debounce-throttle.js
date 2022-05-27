@@ -202,6 +202,7 @@ function throttle(func, wait, options) {
 /*
 * Prevents function execution if call frequency is more than one per set period of time
 */
+// 有leading 有trailing
 const throttle = (cb, delay = 1000) => {
   let shouldWait = false;
   let waitingArgs = null;
