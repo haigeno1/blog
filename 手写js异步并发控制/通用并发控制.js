@@ -357,7 +357,8 @@ function pMap(list, mapper, concurrency = Infinity) {
   })
 }
 
-const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds))
+const sleep = (value = -1, seconds) => new Promise(resolve => setTimeout(() => resolve(value), seconds))
+// const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds))
 
 
 const now = Date.now()
