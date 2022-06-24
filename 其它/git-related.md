@@ -1,4 +1,13 @@
 // https://www.cnblogs.com/xiaohuochai/p/12128087.html
+
+
+<!-- https://mp.weixin.qq.com/s/2ozeZ82vb__vy8fsZvN8xg -->
+git的原理:
+  git 本质是一种类kv数据库的文件系统，通过sha1算法生成的hash作为key，对应到我们的git的几类对象，然后再去树状的寻址，最底层存储的是我们的文件内容。总结一下我们以上说的内容，我们可以得到git的一个设计思路，git记录的是一个a → b过程的链表，通过链表，我们可以逐步回溯到a，在此之下呢，采用了一种多叉树形结构对我们的hash值进行分层记录，最底层，通过我们的hash值进行索引，对应到一个个压缩后的二进制objects。这就是整个git的结构设计。还有一些 git对于查找效率的优化手段，压缩手段。
+  git中的对象，我们一共有4种type，分别是 commit / tree / blob / tag。
+  那我如果真的需要存储很多频繁变动的二进制文件，比如多媒体资源/ psd啥的， 那我需要怎么搞？好的，家人们，上链接。Git LFS（Large file storage）[4]一句话介绍，把我们的大文件变成文件指针存储在对象中，再去lfs拉取对应文件。
+
+
 gitgraph中，基础提交为a，a的基础上有别的提交+b提交，a可以有新的提交最后又合并了b结果又有了提交c。在对比差异时，b对比a，b为实际的commitid，a需要溯源展示为b^，合并产生的c对比之前，c的提交虽然来源于b但还是展示为了c因为优先级最高直接展示当前commitid，c之前的展示为c^可以理解为提交a实际的提交还是a的溯源提交。可见不是只有合并的分支才会有^
 	
 
@@ -9,6 +18,10 @@ gitrebase有自动识别commit的能力，把合并了各种分支的分支a reb
 
 .gitignore只能忽略那些原来没有被track的文件，如果某些文件已经被纳入了版本管理中，则修改.gitignore是无效的。解决方法就是先把本地缓存删除（改变成未track状态），然后再提交:
 git rm -r --cached .
+git rm 工作区 暂存区都会删掉 但是未提交
+
+git checkout -- . 用于从暂存区index恢复工作区,如果执行失败,需要 git reset -- . 从head恢复暂存区再恢复至工作区,再执行git checkout -- .就可以用了
+
 
 查看两个星期内的改动
 git whatchanged --since='2 weeks ago'
