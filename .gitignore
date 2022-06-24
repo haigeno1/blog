@@ -10,5 +10,5 @@ plugins/
 webpack.config.dump.js
 tmp/
 *todo*
-test*
+test.js
 临时暂存待办.md
