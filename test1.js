@@ -25,3 +25,5 @@ function f3(a) { return a * a }
 // let f = compose(f1, f2, f3)
 let f = compose(f3, f2, f1)
 console.log(f(1, 2)) // 36
+
+Number.parseInt()
