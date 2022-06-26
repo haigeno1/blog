@@ -1,22 +1,31 @@
-//把输入的字符串4转为数字4
-const num = 4;
-// const num = Number(readline());
-//定义开始第一列第一行的数值为1
-let num_start = 1;
-//定义一个空数组,用来接受每次输出的数值
-let arr = [];
-//第一层for循环,定义第一列的数值
-for (let i = 0; i < num; i++) {
-	//其值为每一列的第一个数值
-	num_start += i;
-    //让需要被push到数组中的第一个数值为num_start
-	let num_end = num_start;
-    //第二层for循环,用来完成每行的数值,并用arr接收,之所以j = i + 2是因为每一列的第一个数值已经被num_end接收了,所以先push,在加j。而这样就会导致遍历的次数少一次,故num + 1,让遍历次数达到要求
-	for (let j = i + 2; j <= num + 1; j++) {
-  		arr.push(num_end);
-  		num_end += j;
+// export {}
+// "use strict";
+// exports.__esModule = true;
+
+
+// A Famous Saying: Much Ado About Nothing (2012/8).
+// A aaAAbc dFgghh: iimM nNn oooos Sttuuuy (2012/8).
+// let input = 'A Famous Saying: Much Ado About Nothing (2012/8).'
+let input = readline()
+let reg = /[A-Za-z]/
+const arr0 = [...input]
+const arr1 = arr0.filter(str => reg.test(str))
+const arr2 = [...arr1].map((it, index) => [index, it]).sort((a, b) => {
+	let x = a[1].toLowerCase().codePointAt()
+	let y = b[1].toLowerCase().codePointAt()
+	return x < y
+		? -1
+		: x > y
+			? 1
+			: a[0] - b[0]
+}).map(it => it[1])
+let index = 0
+let res = [...input]
+for (let i = 0; i < input.length; i++) {
+	if (reg.test(input[i])) {
+		res[i] = arr2[index]
+		index++
 	}
-    //最后输出结果,并让数值清空,达到题目要求
-	console.log(arr.join(' '));
-	arr = [];
 }
+const res1 = res.join("")
+console.log(res1)
