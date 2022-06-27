@@ -16,6 +16,20 @@ function reverse(head) {
   return prev;
 }
 
+
+var reverseList = function (head) {
+  let curr = head; // 有了curr head还是原来的
+  let prev = null;
+  while (curr) {
+    const next = curr.next;
+    curr.next = prev; // reverse pointers
+    prev = curr;
+    curr = next;
+  }
+  return prev;
+};
+
+
 var reverseList = function (head) {
   let prevNode = null;
   let currNode = head;
@@ -35,17 +49,6 @@ var reverseList = function (head) {
   return prev;
 };
 
-var reverseList = function (head) {
-  let curr = head;
-  let prev = null;
-  while (curr) {
-    const next = curr.next;
-    curr.next = prev; // reverse pointers
-    prev = curr;
-    curr = next;
-  }
-  return prev;
-};
 
 // if (!head) return head
 // let newHead = new ListNode(head.val, null)
