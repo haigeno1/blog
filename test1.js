@@ -30,7 +30,7 @@ let arr = Array(100).fill(0).map((it, index) => index + 1)
 
 let count = 0
 let index = -1
-while (count <= m) {
+while (arr.length >= m) {
   count++
   index++
   if (count === m) {
@@ -41,11 +41,26 @@ while (count <= m) {
   if (index >= arr.length - 1) {
     index = -1
   }
-  if (arr.length < m) break
+  // if (arr.length < m) break
 }
 console.log(arr.join(","));
 
 
+
+function circle(arr, interval, final = 1, index = 0, delCount = 0) {
+  while (arr.length > final) {
+    index += interval - 1
+    // if (index >= arr.length) {
+    //   console.log(`index长度${index}>=数组长度${arr.length}`);
+    // }
+    index %= arr.length
+    const deleted = arr.splice(index, 1)
+    delCount++
+    console.log(`每隔${interval},第${delCount}次删除的下标为${index},值为${deleted},此时数组长度为${arr.length},值为${arr}`);
+  }
+}
+let res = circle(Array(50).fill(0).map((it, index) => index + 1), 3)
+console.log(res);
 
 
 
