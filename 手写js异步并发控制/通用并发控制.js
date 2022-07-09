@@ -4,6 +4,92 @@
 // 是需要耗费额外空间slice原数组然后一个个shift 还是用全局index剩下额外的空间。是需要count还是根本就不需要关注这些自然会保持最高并发数。是一下子处理完原数组所有值还是没用到的暂时不处理。是否需要以及如何获得与原数组一一对应的结果数组。是否递归实质上都需要递归。是async还是纯promise。
 
 
+
+
+
+// 15 行代码实现通用并发控制（javascript）
+/**
+ * @params list {Array} - 要迭代的数组
+ * @params limit {Number} - 并发数量控制数
+ * @params asyncHandle {Function} - 对`list`的每一个项的处理函数，参数为当前处理项，必须 return 一个Promise来确定是否继续进行迭代
+ * @return {Promise} - 返回一个 Promise 值来确认所有数据是否迭代完成
+ */
+
+ let mapLimit = (list, limit, asyncHandle) => {
+  let recursion = (arr) => {
+    // shift代替全局index
+    return asyncHandle(arr.shift()).then(() => {
+      if (arr.length !== 0) return recursion(arr)
+      // 数组还未迭代完，递归继续进行迭代,
+      // 最终会打印finish次数为limit次
+      else return "finish"
+    })
+  }
+
+  let listCopy = [].concat(list)
+  let asyncList = [] // 正在进行的所有并发异步操作,也保留了最终的结果
+  while (limit--) {
+    asyncList.push(recursion(listCopy))
+  }
+}
+
+// test demo
+var dataLists = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 100, 123]
+var count = 0
+mapLimit(dataLists, 3, (curItem) => {
+  return new Promise((resolve) => {
+    count++
+    setTimeout(() => {
+      console.log(curItem, "当前并发量:", count--)
+      resolve()
+    }, Math.random() * 5000)
+  })
+})
+
+
+
+// nice
+// https://codepen.io/shanyue/pen/zYwZXPN?editors=1011
+// 用currentIndex代替额外的数组shift
+function pMap(list, mapper, concurrency = Infinity) {
+  // list 为 Iterator，先转化为 Array
+  list = Array.from(list)
+  return new Promise((resolve, reject) => {
+    let currentIndex = 0
+    let result = []
+    let resolveCount = 0
+    let len = list.length
+    function next() {
+      const index = currentIndex
+      currentIndex++
+      Promise.resolve(list[index]).then(o => mapper(o, index)).then(o => {
+        result[index] = o
+        resolveCount++
+        if (resolveCount === len) { resolve(result) }
+        if (currentIndex < len) { next() }
+      })
+    }
+    for (let i = 0; i < concurrency && i < len; i++) {
+      next()
+    }
+  })
+}
+
+const sleep = (value = -1, seconds) => new Promise(resolve => setTimeout(() => resolve(value), seconds))
+// const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds))
+
+
+const now = Date.now()
+console.log('Start')
+pMap([1, 1, 1], x => sleep(x * 1000)).then(o => {
+  console.log(o)
+  console.log(Date.now() - now, 'seconds')
+})
+
+pMap([1, 2, 3], x => x * 3).then(o => console.log(o))
+
+
+
 // https://blog.csdn.net/qq_34629352/article/details/105955188
 // 将一个递归函数拆分成两个，一个函数只负责计数和发送请求，另外一个负责调度。
 
@@ -145,49 +231,10 @@ send()
 
 
 
-// 15 行代码实现通用并发控制（javascript）
-/**
- * @params list {Array} - 要迭代的数组
- * @params limit {Number} - 并发数量控制数
- * @params asyncHandle {Function} - 对`list`的每一个项的处理函数，参数为当前处理项，必须 return 一个Promise来确定是否继续进行迭代
- * @return {Promise} - 返回一个 Promise 值来确认所有数据是否迭代完成
- */
-
-let mapLimit = (list, limit, asyncHandle) => {
-  let recursion = (arr) => {
-    return asyncHandle(arr.shift()).then(() => {
-      if (arr.length !== 0) return recursion(arr)
-      // 数组还未迭代完，递归继续进行迭代,
-      // 最终会打印finish次数为limit次
-      else return "finish"
-    })
-  }
-
-  let listCopy = [].concat(list)
-  let asyncList = [] // 正在进行的所有并发异步操作
-  while (limit--) {
-    asyncList.push(recursion(listCopy))
-  }
-}
-
-// test demo
-var dataLists = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 100, 123]
-var count = 0
-mapLimit(dataLists, 3, (curItem) => {
-  return new Promise((resolve) => {
-    count++
-    setTimeout(() => {
-      console.log(curItem, "当前并发量:", count--)
-      resolve()
-    }, Math.random() * 5000)
-  })
-})
-
-
 
 // 利用 Promise 封装一个异步加载图片的方法，并限制并发个数，即同时请求的个数不超过3个。
 // 采用全局index，替代采用额外的数组shift
-let count = 0
+// let count = 0
 let index = 0
 let asyncGet = (v) => {
   console.log("begin:", v)
@@ -201,15 +248,14 @@ let asyncGet = (v) => {
 // 用的全局index
 function loadControl(arr) {
   if (index >= arr.length) return
-  if (count < 3) {
-    console.log(count, index)
-    count++
-    asyncGet(arr[index])
-      .then(() => {
-        count--
-      })
-      .then(() => loadControl(arr, ++index))
-  }
+  console.log(index)
+  // count++
+  // console.log(count, index)
+  asyncGet(arr[index])
+    // .then(() => {
+    //   count--
+    // })
+    .then(() => loadControl(arr, ++index))
 }
 let arr = Array.from({ length: 50 }).map((k, i) => "url" + i)
 // 这里要同时调用limit次
@@ -327,45 +373,3 @@ function limitLoad(urls, handler, limit) {
 
 
 
-
-
-
-
-// nice
-// https://codepen.io/shanyue/pen/zYwZXPN?editors=1011
-function pMap(list, mapper, concurrency = Infinity) {
-  // list 为 Iterator，先转化为 Array
-  list = Array.from(list)
-  return new Promise((resolve, reject) => {
-    let currentIndex = 0
-    let result = []
-    let resolveCount = 0
-    let len = list.length
-    function next() {
-      const index = currentIndex
-      currentIndex++
-      Promise.resolve(list[index]).then(o => mapper(o, index)).then(o => {
-        result[index] = o
-        resolveCount++
-        if (resolveCount === len) { resolve(result) }
-        if (currentIndex < len) { next() }
-      })
-    }
-    for (let i = 0; i < concurrency && i < len; i++) {
-      next()
-    }
-  })
-}
-
-const sleep = (value = -1, seconds) => new Promise(resolve => setTimeout(() => resolve(value), seconds))
-// const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds))
-
-
-const now = Date.now()
-console.log('Start')
-pMap([1, 1, 1], x => sleep(x * 1000)).then(o => {
-  console.log(o)
-  console.log(Date.now() - now, 'seconds')
-})
-
-pMap([1, 2, 3], x => x * 3).then(o => console.log(o))
