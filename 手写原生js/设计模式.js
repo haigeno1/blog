@@ -150,7 +150,6 @@ var Singleton = (function () {
 
   function createInstance() {
     var object = { title: 'I am object' };
-
     return object;
   }
 
@@ -168,6 +167,62 @@ var instance1 = Singleton.getInstance();
 var instance2 = Singleton.getInstance();
 
 console.log(instance1 === instance2); // true
+
+
+
+// 单例模式
+// https://segmentfault.com/a/1190000019532633
+let CreateSingleton = (function () {
+  let instance;
+  return function (name) {
+    if (instance) {
+      return instance;
+    }
+    this.name = name;
+    return instance = this;
+  }
+})();
+CreateSingleton.prototype.getName = function () {
+  console.log(this.name);
+}
+
+let Winner = new CreateSingleton('Winner');
+let Looser = new CreateSingleton('Looser');
+
+console.log(Winner === Looser); // true
+console.log(Winner.getName());  // 'Winner'
+console.log(Looser.getName());  // 'Winner'
+
+
+
+
+
+
+let instance = null;
+class Singleton {
+  static get instance() {
+    return instance;
+  }
+
+  static set instance(_instance) {
+    instance = _instance;
+  }
+
+  constructor() {
+    if (Singleton.instance === null) {
+      Singleton.instance = this;
+    }
+    return Singleton.instance;
+  }
+
+  toString() {
+    return "[object Singleton]";
+  }
+
+  getInstance() {
+    return new Singleton();
+  }
+}
 
 
 
