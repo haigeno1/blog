@@ -11,6 +11,7 @@ webpack5主要新特性介绍
   更强大的tree-shaking；
   持久化缓存提高性能；
   Module Federation 模块联邦；
+    <!-- https://www.zoo.team/article/webpack-modular -->
     Module Federation是为了解决独立应用之间代码共享问题。可以在项目内动态加载其他项目的代码，同步可以共享依赖。
 
 Loader: 因为前端项目中包含各种文件类型和数据, 需要将其进行相应的转换变成JS模块才能为打包工具使用并进行构建. JS的Compiler和其他类型文件的Loader可以统称为Transfomer.
