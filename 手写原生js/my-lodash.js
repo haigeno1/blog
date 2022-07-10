@@ -1891,7 +1891,7 @@ var haigeno1 = (function(){
       }
     }
 
-    function INSTANCEOF(val, fn) {
+    function myInstanceOf(val, fn) {
       if (!val) {
         return false
       }
@@ -1901,7 +1901,7 @@ var haigeno1 = (function(){
       if (val.__proto__.constructor === fn) {
         return true
       } else {
-        return INSTANCEOF(val.__proto__, fn)
+        return myInstanceOf(val.__proto__, fn)
       }
     }
 
@@ -2089,41 +2089,6 @@ var haigeno1 = (function(){
     // Promise.reject(3).finally(() => {})
 
     //node
-    class EventEmitter {
-      constructor() {
-        this.eventMap = Object.create(null)
-      }
-
-      on(type, handler) {
-        if (type in this.eventMap) {
-          this.eventMap[type].push(handler)
-        } else {
-          this.eventMap[type] = [handler]
-        }
-        return this
-      }
-
-      off(type, handler) {
-        if (type in this.eventMap) {
-          this.eventMap[type] = this.eventMap[type].filter(it => it != handler)
-        }
-        return this
-      }
-
-      once(type, handler) {
-        return this.on(type, function temp(...args) {
-          handler.apply(this, args)
-          this.off(type, temp)
-        })
-      }
-
-      emit(type, ...args) {
-        if (type in this.eventMap) {
-          this.eventMap[type].forEach(handler => handler.apply(this, args))
-        }
-        return this
-      }
-    }
     function promisify(f) {
       return function(...args) {
         return new Promise((resolve, reject) => {

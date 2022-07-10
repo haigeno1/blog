@@ -21,8 +21,20 @@ function compose(...fns) {
 
 // test
 // function f1(a, b) { return a + b }
-// function f2(a) { return 2 * a }
+// function f2(a) { return F2 * a }
 // function f3(a) { return a * a }
 // // let f = compose(f1, f2, f3)
 // let f = compose(f3, f2, f1)
 // console.log(f(1, 2)) // 36
+
+
+function compose(...fns) {
+  return arg => {
+    return fns.reduceRight((_arg, fn) => {
+      return fn(_arg);
+    }, arg);
+  };
+}
+const double = n => n * 2;
+const inc = n => n + 1;
+compose(console.log, inc, double)(5);

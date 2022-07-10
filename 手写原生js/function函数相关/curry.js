@@ -25,6 +25,16 @@ function curry(fn, length) {
   };
 }
 
+
+function curry(func) {
+  return function next(...args) {
+    if (args.length < func.length) {
+      return (...args1) => next(...args, ...args1);
+    }
+    return func(...args);
+  };
+}
+
 // 不使用partial
 function curry(fn, ...args) {
   var length = fn.length;
