@@ -1,4 +1,5 @@
 历史大版本的changelog,v3比v2升级了什么?
+  v3 
 setup为什么没有this?
 生命周期
 组件传参方式

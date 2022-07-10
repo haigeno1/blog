@@ -1,4 +1,7 @@
 历史大版本的changelog
+  React 16
+  v17
+  v18
 fiber
 hooks
 生命周期
@@ -6,4 +9,4 @@ hooks
 
 
 
-状态管理redux recoil
+状态管理redux react-redux recoil mobx
