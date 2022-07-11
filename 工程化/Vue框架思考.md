@@ -1,5 +1,5 @@
 历史大版本的changelog,v3比v2升级了什么?
-  在体验Vue3之前，我们先来了解一下Vu3到底有哪些亮点之处
+  在体验Vue3之前，我们先来了解一下Vue3到底有哪些亮点之处
   总共有6大点：
   1. Performance（性能比vue2的runtime快2倍左右）
   2. Tree shaking support（按需打包模块）
@@ -11,6 +11,8 @@ setup为什么没有this?
 <!-- 生命周期 -->
 <!-- 组件传参方式 -->
 vue3的缺点
+  自动化程度太高带来的调试问题
+  准备替换掉虚拟dom?
 
 
 pinia(vuex5)相比于vuex4改进点?

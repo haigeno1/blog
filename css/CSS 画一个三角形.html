@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画三角形</title>
+  <!-- 当div 的宽高为0，存在边框的时候，四条边框的中心将会是一个点，通过设置其他三条边框的透明度，实现三角形。 -->
+  <style>
+    .triggle {
+      width: 0px;
+      height: 0px;
+      border-width: 100px;
+      border-style: dotted dotted solid dotted;
+      border-color: transparent transparent red transparent;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="triggle"></div>
+</body>
+
+</html>
