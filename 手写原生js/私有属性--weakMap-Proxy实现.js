@@ -11,23 +11,24 @@
 // 通过 #prop 的 es 新语法实现私有，babel 和 tsc 会把它们编译成 WeakMap 的方式
 // 通过 ts 的 private 在编译时约束
 
-// 这六种方式，有三种只是伪私有，比如 _prop（依然可以访问）、ts 的 private（运行时可访问）、Symbol（可以通过 Object.getOwnSymbols 拿到 symbol 来访问）。
+// 这六种方式，有三种只是伪私有，比如 _prop（依然可以访问）、ts 的 private（运行时可访问）、Symbol（可以通过 Object.getOwnPropertySymbols 拿到 symbol 来访问）。
 // 另外三种是真正的私有，包括 Proxy、WeakMap、#prop（目前是编译为 WeakMap 的方式）。
 // 有的是从属性名上想办法，比如 _prop 和 Symbol，有的是从 this 上想办法，比如 Proxy（包一层） 和 WeakMap（不挂到 this），有的是从语言本身想办法，比如 ts 的 private 或者 es 新语法的 #prop。
 
+// https://github.com/yeyan1996/practical-javascript/blob/master/private.js
 
 
-
+// 总得有个闭包变量, 要么是个变量直接赋值 要么是个symbol或字符串作为key 要么是个WeakMap或者对象存每个实例的私有属性, weakMap最完美
 
 
 // 所以这种方式实现的私有属性，实际上是被所有实例共享的，如果需要每个实例单独拥有自己的私有属性，这种方法就不行了。
-const Person = (function() {
+const Person = (function () {
   let name;
   function Person(n) {
-      name = n;
+    name = n;
   }
-  Person.prototype.getName = function() {
-      return name;
+  Person.prototype.getName = function () {
+    return name;
   };
   return Person;
 }());
@@ -36,12 +37,26 @@ let person2 = new Person('大明');
 console.log(person1.getName()); // 大明
 
 
+// //私有变量(闭包)
+class Person4 {
+  constructor(name) {
+    let _name = name
+    // 在constructor内 而非prototype内
+    this.getName = function () {
+      return _name
+    }
+  }
+}
+let person4 = new Person4('zhl')
+console.log("闭包:", person4)
+console.log(person4.name)
+console.log(person4.getName())
 
 
 
 // 即便Person的某个实例对象被垃圾回收了，private对象里存储的它的全部私有属性依旧不会被回收，这会导致内存泄漏问题
 // 每个实例对象多出了一个_privateId属性，而且该方法不够直观优雅
-const Person = (function() {
+const Person = (function () {
   const private = {};
   let privateId = 0;
 
@@ -52,11 +67,11 @@ const Person = (function() {
     });
     this._privateId = privateId++;
     private[this._privateId] = {};
-    private[this._privateId].name = name;    
+    private[this._privateId].name = name;
   }
 
-  Person.prototype.getName = function() {
-      return private[this._privateId].name;
+  Person.prototype.getName = function () {
+    return private[this._privateId].name;
   };
 
   return Person;
@@ -69,22 +84,49 @@ console.log(person1.getName()); // 小明
 
 
 
+// 私有变量(Symbol)
+// 并没有真正实现私有属性
+const Person1 = (function () {
+  const _name = Symbol('name') // 每个实例都会有同一个key  换成个字符串作key只要不和实例上的重复本质上没区别
+
+  class Person1 {
+    constructor(name) {
+      this[_name] = name
+    }
+
+    getName() {
+      return this[_name]
+    }
+  }
+
+  return Person1
+})()
+
+let person1 = new Person1('zhl')
+
+console.log('Symbol:', person1) // 可以直接看到 {Symbol(name): 'zhl'} 但是没看到_name
+console.log(person1._name) // undefined
+console.log(person1.getName()) // zhl
+let k = Object.getOwnPropertySymbols(person1)[0] // Symbol(name)
+// 这里获取到了 所以并没有真正实现私有属性
+person1[k] //  zhl  
 
 
 
 
 // 既然我们不想多造一个单独的_privateId属性去实现私有属性的存储，那还有什么值可以作为该实例对象的唯一标识呢？它的内存地址？可是js似乎不允许直接获取一个对象的地址。
 // 我们不再需要额外的id去标识每个实例，那内存泄漏问题呢？这就是为何要用WeakMap而不是Map了，WeakMap对key对象仅有“弱引用”，当没有其它引用指向该key对象时，该对象即可被垃圾回收，WeakMap不会阻止回收。
-const Person = (function() {
+const Person = (function () {
   const private = new WeakMap();
 
   function Person(name) {
     private.set(this, {});
     private.get(this).name = name;
+    // private.set(this, {name})
   }
 
-  Person.prototype.getName = function() {
-      return private.get(this).name;
+  Person.prototype.getName = function () {
+    return private.get(this).name;
   };
 
   return Person;
@@ -100,68 +142,67 @@ console.log(person1.getName()); // 小明
 // Proxy方式实现
 class Dong {
   constructor() {
-      this._name = 'dong';
-      this._age = 20;
-      this.friend = 'guang';
+    this._name = 'dong';
+    this._age = 20;
+    this.friend = 'guang';
   }
   hello() {
-      return 'I\'m ' + this._name + ', '  + this._age + ' years old';
+    return 'I\'m ' + this._name + ', ' + this._age + ' years old';
   }
 }
-const dong = new Dong();
+const dong = new Dong(); // 直接暴露了 _name _age
 const handler = {
-    get(target, prop) {
-        if (prop.startsWith('_')) {
-            return;
-        }
-        return target[prop];
-   },
-   set(target, prop, value) {
+  get(target, prop) {
     if (prop.startsWith('_')) {
-        return;
-     }
-     target[prop] = value;
-   },
-   ownKeys(target, prop) {
-      return Object.keys(target).filter(key => !key.startsWith('_'))
-   },
- }
-const proxy = new Proxy(dong, handler)
+      return;
+    }
+    return target[prop];
+  },
+  set(target, prop, value) {
+    if (prop.startsWith('_')) {
+      return;
+    }
+    target[prop] = value;
+  },
+  ownKeys(target, prop) {
+    return Object.keys(target).filter(key => !key.startsWith('_'))
+  },
+}
+proxy = new Proxy(dong, handler) // {_name: 'dong', _age: 20, friend: 'guang'} 直接看到了私有变量的key value
 
 
 
 
-// https://github.com/yeyan1996/practical-javascript/blob/master/private.js
 
 //私有变量(Proxy)
 const proxy = function (obj) {
   return new Proxy(obj, {
-      get(target, key) {
-          if (key.startsWith('_')) {
-              throw new Error('private key')
-          }
-          return Reflect.get(target, key)
-      },
-      //拦截所有遍历操作
-      ownKeys(target) {
-          return Reflect.ownKeys(target).filter(key => !key.startsWith('_'))
+    get(target, key) {
+      if (key.startsWith('_')) {
+        throw new Error('private key')
       }
+      return Reflect.get(target, key)
+    },
+    //拦截所有遍历操作
+    ownKeys(target) {
+      return Reflect.ownKeys(target).filter(key => !key.startsWith('_'))
+    }
   })
 }
 
 class Person {
   constructor(name) {
-      this._name = name
-      return proxy(this)
+    this._name = name
+    return proxy(this)
   }
 
   get name() {
-      return this._name
+    return this._name
   }
 }
 
 
-let person = new Person('zhl')
+let person = new Person('zhl')  // _name是直接对外暴露的
 
 console.log(person)
 try {
@@ -172,69 +213,3 @@ try {
 console.log(person.name)
 
 
-//私有变量(Symbol)
-const Person1 = (function () {
-  const _name = Symbol('name')
-
-  class Person1 {
-      constructor(name) {
-          this[_name] = name
-      }
-
-      getName() {
-          return this[_name]
-      }
-  }
-
-  return Person1
-})()
-
-let person1 = new Person1('zhl')
-
-console.log('Symbol:', person1)
-console.log(person1._name) //undefined
-console.log(person1.getName())
-
-
-//私有变量(WeakMap)
-//WeakMap相对于Map当对象不存在的时候自动从映射表中移除,自动减少内存占用率
-const Person2 = (function () {
-  let wp = new WeakMap()
-
-  class Person2 {
-      constructor(name) {
-          //存储当前实例和当前实例的私有变量
-          wp.set(this, {name})
-      }
-
-      getName() {
-          return wp.get(this).name
-      }
-  }
-
-  return Person2
-})()
-
-let person2 = new Person2('zhl')
-
-console.log("WeakMap:", person2)
-console.log(person2.name)
-console.log(person2.getName())
-
-
-// //私有变量(闭包)
-class Person4 {
-  constructor(name) {
-      let _name = name
-      this.getName = function () {
-          return _name
-      }
-  }
-}
-
-
-let person4 = new Person4('zhl')
-
-console.log("闭包:", person4)
-console.log(person4.name)
-console.log(person4.getName())
