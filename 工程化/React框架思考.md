@@ -11,6 +11,21 @@ hooks对比class
 钩子（hook）就是 React 函数组件的副效应解决方案，用来为函数组件引入副效应。 函数组件的主体只应该用来返回组件的 HTML 代码，所有的其他操作（副效应）都必须通过钩子引入。函数式编程将那些跟数据计算无关的操作，都称为 "副效应" （side effect）
 
 组件传参方式
+  父组件 => 子组件：
+    Props
+    Instance Methods 父组件可以通过使用refs来直接调用子组件实例的方法
+  子组件 => 父组件：
+    Callback Functions
+    Event Bubbling 这种方法其实跟react本身没有关系，我们利用的是原生dom元素的事件冒泡机制。
+  兄弟组件之间：
+    Parent Component 它们就可以通过父组件作为中间层来实现数据互通了。
+  不太相关的组件之间：
+    Context
+    Portals Portals的主要应用场景是：当两个组件在react项目中是父子组件的关系，但在HTML DOM里并不想是父子元素的关系。
+    Global Variables
+    Observer Pattern
+    Redux等
+
 
 React的缺点?
   虚拟DOM的结构复杂无疑带来很多开销
