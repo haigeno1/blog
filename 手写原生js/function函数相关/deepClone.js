@@ -235,7 +235,7 @@ function hasLoop(obj) {
 }
 
 
-function hsaCycle(obj, objAry) {
+function hasCycle(obj, objAry) {
   var objAry = objAry || [obj];
   var flag = false;
   for (var name in obj) {
@@ -246,7 +246,7 @@ function hsaCycle(obj, objAry) {
       } else {
         // 先push 后pop  添加的操作在这里
         objAry.push(obj[name]);
-        flag = hsaCycle(obj[name], objAry);
+        flag = hasCycle(obj[name], objAry);
         if (flag == true) {
           break;
         }
