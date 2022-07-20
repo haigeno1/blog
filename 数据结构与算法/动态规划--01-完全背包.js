@@ -2,7 +2,7 @@
  * @Author: haigeno1 2276765922@qq.com
  * @Date: 2022-07-19 21:43:49
  * @LastEditors: haigeno1 2276765922@qq.com
- * @LastEditTime: 2022-07-20 21:30:26
+ * @LastEditTime: 2022-07-20 23:05:05
  * @FilePath: /js-snippets/数据结构与算法/动态规划-01背包.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -199,3 +199,35 @@ function test_completePack3(weight, value, size) {
 
 }
 test_completePack3([2, 3, 1, 5], [12, 20, 5, 55], 7)
+
+
+
+// 零钱兑换 LeetCode 518 https://leetcode.cn/problems/coin-change-2/
+const change = (amount, coins) => {
+  let dp = Array(amount + 1).fill(0);
+  dp[0] = 1;
+
+  let res = Array(amount + 1).fill(0).map(() => [])
+
+  // 先遍历物品再遍历背包是组合, 先遍历背包再遍历物品是排列
+  for (let i = 0; i < coins.length; i++) {
+    for (let j = 0; j <= amount; j++) {
+      if (j >= coins[i]) {
+        dp[j] += dp[j - coins[i]];
+        console.log(i, j, coins[i], dp);
+
+        let toBeAdd
+        if (j - coins[i] > 0) {
+          toBeAdd = res[j - coins[i]].map(it => [...it, coins[i]])
+        } else if (j - coins[i] === 0) {
+          toBeAdd = [[coins[i]]]
+        }
+        // res保存了所有的组合或排列的结果
+        res[j] = [...res[j], ...toBeAdd]
+      }
+    }
+  }
+
+  return dp[amount];
+}
+change(5, [1, 2, 5])
