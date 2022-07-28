@@ -54,6 +54,7 @@ function insertionSort(arr) {
 
 
 // 4、希尔排序（Shell Sort）
+// 每组长度 len/2 len/4 len/8 ... 1, 每组的第i个值都是递增的,当每组长度为1时，就是最终结果
 function shellSort(arr) {
   var len = arr.length;
   for (var gap = Math.floor(len / 2); gap > 0; gap = Math.floor(gap / 2)) {
