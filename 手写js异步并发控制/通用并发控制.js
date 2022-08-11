@@ -75,9 +75,10 @@ function pMap(list, mapper, concurrency = Infinity) {
   })
 }
 
-const sleep = (value = -1, seconds) => new Promise(resolve => setTimeout(() => resolve(value), seconds))
+const sleep = (value = -1, seconds) => new Promise(resolve => setTimeout(() => resolve(value, console.log(x)), seconds))
+const sleep1 = (value = -1, seconds) => new Promise((resolve, reject) => setTimeout(() => reject(`Error: ${value}`, console.log(x)), seconds))
+const sleep0 = (value = -1, seconds) => new Promise(resolve => setTimeout(() => resolve(value), seconds))
 // const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds))
-
 
 const now = Date.now()
 console.log('Start')
