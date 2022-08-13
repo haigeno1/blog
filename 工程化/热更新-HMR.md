@@ -1,4 +1,5 @@
-// https://juejin.cn/post/6844904020528594957
+<!-- // https://juejin.cn/post/6844904020528594957 -->
+<!-- // https://github.com/gracehui88/HMR -->
 总体流程
 1. 整个流程分为客户端和服务端
 2. 通过 websocket 建立起 浏览器端 和 服务器端 之间的通信
@@ -6,12 +7,9 @@
 3. 服务端主要分为四个关键点
 
 通过webpack创建compiler实例，webpack在watch模式下编译
-
-compiler实例：监听本地文件的变化、文件改变自动编译、编译输出
-更改config中的entry属性：将lib/client/index.js、lib/client/hot/dev-server.js注入到打包输出的chunk文件中
-往compiler.hooks.done钩子（webpack编译完成后触发）注册事件：里面会向客户端发射hash和ok事件
-
-
+  compiler实例：监听本地文件的变化、文件改变自动编译、编译输出
+  更改config中的entry属性：将lib/client/index.js、lib/client/hot/dev-server.js注入到打包输出的chunk文件中
+  往compiler.hooks.done钩子（webpack编译完成后触发）注册事件：里面会向客户端发射hash和ok事件
 调用webpack-dev-middleware：启动编译、设置文件为内存文件系统、里面有一个中间件负责返回编译的文件
 创建webserver静态服务器：让浏览器可以请求编译生成的静态资源
 创建websocket服务：建立本地服务和浏览器的双向通信；每当有新的编译，立马告知浏览器执行热更新逻辑
